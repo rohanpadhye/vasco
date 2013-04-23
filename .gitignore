@@ -1,5 +1,8 @@
 bin
-docs
+doc
+sootOutput
+.classpath
+.project
 *.class
 *.jar
 *~
