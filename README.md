@@ -7,6 +7,10 @@ The framework classes are present in the package `vasco` and are described in th
 
 You can use these classes directly with any program analysis toolkit or intermediate representation, although they work best with [Soot](http://www.sable.mcgill.ca/soot) and it's *Jimple* representation.
 
+## API Documentation ##
+
+The API documentation for the framework classes is available at http://rohanpadhye.github.io/vasco/apidocs.
+
 ## Points-to Analysis ##
 
 A sample use of this framework can be found in the package `vasco.callgraph` which contains a points-to analysis that builds a context-sensitive call graph on-the-fly.
