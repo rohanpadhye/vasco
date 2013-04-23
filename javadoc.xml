@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="javadoc">
+	<target name="javadoc">
+		<javadoc access="protected" author="true" classpath="tools.jar:soot.jar" destdir="doc" doctitle="Interprocedural Analysis using Value Contexts" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" 
+			packagenames="vasco, vasco.callgraph" source="1.6" sourcepath="src" splitindex="false" use="true" version="true">
+			<link offline="true" href="http://download.oracle.com/javase/6/docs/api/" packagelistloc="offline/java" />
+			<link offline="true" href="http://docs.oracle.com/javase/1.5.0/docs/guide/jpda/jdi/" packagelistloc="offline/jdi" />
+			<link offline="true" href="http://www.sable.mcgill.ca/soot/doc/" packagelistloc="offline/soot" />
+		</javadoc>
+	</target>
+</project>
