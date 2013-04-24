@@ -17,9 +17,9 @@ There is a JavaDoc generated [API documentation](http://rohanpadhye.github.io/va
 
 A sample use of this framework can be found in the package `vasco.callgraph` which contains a points-to analysis that builds a context-sensitive call graph on-the-fly.
 
-### Usage ###
+### Experiments ###
 
-To test this implementation ensure that Soot is in your class path and run:
+To execute the tests as described in the paper, ensure that Soot is in your class path and run:
 
 <code>
 java vasco.callgraph.Test [-cp CLASSPATH] [-out DIR] [-k DEPTH] MAIN_CLASS
@@ -32,6 +32,8 @@ Where:
 - `DEPTH` is the maximum depth of call chains to count (default: `10`)
 - `MAIN_CLASS` is the entry point to the program
 
+This will generate a bunch of CSV files in the output directory containing statistics of analyzed methods, contexts, and call chains.
+
 ## Pending Tasks ##
 
 ### Points-to analysis: ###
@@ -42,3 +44,4 @@ Where:
 ### Inter-procedural framework: ###
 
 - Improve performance using multi-threaded processing of flow functions.
+- Add a simpler example (e.g. null dereference analysis) as points-to analysis may be too complex to serve as a tutorial
