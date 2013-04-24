@@ -258,11 +258,12 @@ public abstract class InterProceduralAnalysis<M,N,A> {
 	}
 	
 	/**
-	 * Returns all methods for which at least one context was created.
-	 * @return an unmodifiable set of analysed methods
+	 * Returns a reference to the context transition table used by this analysis.
+	 * 
+	 * @return a reference to the context transition table used by this analysis
 	 */
-	public Set<M> getMethods() {
-		return Collections.unmodifiableSet(contexts.keySet());
+	public ContextTransitionTable<M,N,A> getContextTransitionTable() {
+		return contextTransitions;
 	}
 
 	/**
@@ -296,6 +297,43 @@ public abstract class InterProceduralAnalysis<M,N,A> {
 	public abstract M getMainMethod();
 
 	/**
+	 * Returns all methods for which at least one context was created.
+	 * @return an unmodifiable set of analysed methods
+	 */
+	public Set<M> getMethods() {
+		return Collections.unmodifiableSet(contexts.keySet());
+	}
+	
+	/**
+	 * Returns a meet-over-valid-paths solution by merging data flow
+	 * values across contexts for each program point.
+	 * 
+	 * <p>This method should not be invoked if the flag 
+	 * {@link #freeResultsOnTheFly} had been set during analysis.</p>
+	 * 
+	 * @return a meet-over-valid-paths data flow solution
+	 */
+	public DataFlowSolution<N,A> getMeetOverValidPathsSolution() {
+		Map<N,A> inValues = new HashMap<N,A>();
+		Map<N,A> outValues = new HashMap<N,A>();
+		// Merge over all contexts
+		for (M method : contexts.keySet()) {
+			for (N node : getControlFlowGraph(method)) {
+				A in = topValue();
+				A out = topValue();
+				for (Context<M,N,A> context : contexts.get(method)) {
+					in = meet(in, context.getValueBefore(node));
+					out = meet(out, context.getValueAfter(node));
+				}
+				inValues.put(node, in);
+				outValues.put(node, out);
+			}
+		}
+		// Return data flow solution
+		return new DataFlowSolution<N,A>(inValues, outValues);
+	}
+
+	/**
 	 * Returns the target of a call-site.
 	 * 
 	 * @param callSite the call-site whose targets to retrieve
@@ -305,15 +343,6 @@ public abstract class InterProceduralAnalysis<M,N,A> {
 		return this.contextTransitions.getTargets(callSite);
 	}
 
-	/**
-	 * Returns a reference to the context transition table used by this analysis.
-	 * 
-	 * @return a reference to the context transition table used by this analysis
-	 */
-	public ContextTransitionTable<M,N,A> getContextTransitionTable() {
-		return contextTransitions;
-	}
-	
 	/**
 	 * Returns the meet of two data flow values.
 	 * 
