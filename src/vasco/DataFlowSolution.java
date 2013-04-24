@@ -23,7 +23,7 @@ import java.util.Map;
  * A mapping of program points to results of data flow analysis.
  * 
  * <p>This simple mapping does not parametrise solutions with a
- * {#link Context}, and is thus context-insensitive. The results of a 
+ * context object, and is thus context-insensitive. The results of a 
  * context-sensitive inter-procedural analysis can be reduced to this
  * form by merging results for the same program point across all 
  * contexts, giving what is known as the Meet-Over-Valid-Paths solution.</p>
@@ -54,10 +54,10 @@ public class DataFlowSolution<N,A> {
 	}
 	
 	/**
-	 * Returns the data flow value at the entry to a node.
+	 * Returns the data flow value at the entry of a node.
 	 * 
 	 * @param node a program point
-	 * @return the data flow value at the entry to <tt>node</tt>.
+	 * @return the data flow value at the entry of <tt>node</tt>
 	 * 
 	 */
 	public A getValueBefore(N node) {
@@ -65,10 +65,10 @@ public class DataFlowSolution<N,A> {
 	}
 	
 	/**
-	 * Returns the data flow value at the exit to a node.
+	 * Returns the data flow value at the exit of a node.
 	 * 
 	 * @param node a program point
-	 * @return the data flow value at the exit to <tt>node</tt>.
+	 * @return the data flow value at the exit of <tt>node</tt>
 	 * 
 	 */
 	public A getValueAfter(N node) {
