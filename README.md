@@ -3,7 +3,7 @@ VASCO
 
 VASCO is a framework for performing precise inter-procedural data flow analysis using VAlue Sensitive COntexts.
 
-The framework classes are present in the package `vasco` and are described in the paper: *Link to PDF will be added soon.*
+The framework classes are present in the package `vasco` and are described in the paper: [Interprocedural Data Flow Analysis in Soot using Value Contexts](http://arxiv.org/abs/1304.6274)
 
 You can use these classes directly with any program analysis toolkit or intermediate representation, although they work best with [Soot](http://www.sable.mcgill.ca/soot) and it's *Jimple* representation.
 
