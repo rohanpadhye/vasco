@@ -28,7 +28,7 @@ import java.util.Map;
  * form by merging results for the same program point across all 
  * contexts, giving what is known as the Meet-Over-Valid-Paths solution.</p>
  * 
- * @author Padhye
+ * @author Rohan Padhye
  *
  * @param <N> the type of a node in the CFG
  * @param <A> the type of a data flow value
