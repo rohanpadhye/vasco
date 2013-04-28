@@ -31,13 +31,15 @@
     <!-- MAIN CONTENT -->
     <div id="main_content_wrap" class="outer">
       <section id="main_content" class="inner">
-        <p><strong>VASCO</strong> is a framework for performing precise inter-procedural data flow analysis using VAlue Sensitive COntexts.</p>
+        <h1>VASCO</h1>
+
+<p>VASCO is a framework for performing precise inter-procedural data flow analysis using VAlue Sensitive COntexts.</p>
 
 <p>The framework classes are present in the package <code>vasco</code> and are described in the paper: <a href="http://arxiv.org/abs/1304.6274">Interprocedural Data Flow Analysis in Soot using Value Contexts</a></p>
 
 <p>You can use these classes directly with any program analysis toolkit or intermediate representation, although they work best with <a href="http://www.sable.mcgill.ca/soot">Soot</a> and it's <em>Jimple</em> representation.</p>
 
-<p>This framework was developed as a part of a larger M.Tech. Project on Inter-Procedural Heap Alias Analysis by <a href="http://www.cse.iitb.ac.in/%7Erohanpadhye">Rohan Padhye</a> under the supervision of <a href="http://www.cse.iitb.ac.in/%7Euday">Prof. Uday Khedker</a> at the <a href="http://www.iitb.ac.in">Indian Institute of Technology Bombay</a> (<a href="http://www.cse.iitb.ac.in">Department of Computer Science and Engineering</a>).</p>
+<p>This framework was developed as a part of a larger M.Tech. project on precise heap alias analysis by <a href="http://www.cse.iitb.ac.in/%7Erohanpadhye">Rohan Padhye</a> under the supervision of <a href="http://www.cse.iitb.ac.in/%7Euday">Prof. Uday Khedker</a> at the <a href="http://www.iitb.ac.in">Indian Institute of Technology Bombay</a> (<a href="http://www.cse.iitb.ac.in">Department of Computer Science and Engineering</a>).</p>
 
 <h2>API Documentation</h2>
 
@@ -47,9 +49,9 @@
 
 <p>A sample use of this framework can be found in the package <code>vasco.callgraph</code> which contains a points-to analysis that builds a context-sensitive call graph on-the-fly.</p>
 
-<h3>Usage</h3>
+<h3>Experiments</h3>
 
-<p>To test this implementation ensure that Soot is in your class path and run:</p>
+<p>To execute the tests as described in the paper, ensure that Soot is in your class path and run:</p>
 
 <p><code>
 java vasco.callgraph.Test [-cp CLASSPATH] [-out DIR] [-k DEPTH] MAIN_CLASS
@@ -66,7 +68,9 @@ java vasco.callgraph.Test [-cp CLASSPATH] [-out DIR] [-k DEPTH] MAIN_CLASS
 <code>DEPTH</code> is the maximum depth of call chains to count (default: <code>10</code>)</li>
 <li>
 <code>MAIN_CLASS</code> is the entry point to the program</li>
-</ul><h2>Pending Tasks</h2>
+</ul><p>This will generate a bunch of CSV files in the output directory containing statistics of analyzed methods, contexts, and call chains.</p>
+
+<h2>Pending Tasks</h2>
 
 <h3>Points-to analysis:</h3>
 
@@ -77,6 +81,7 @@ java vasco.callgraph.Test [-cp CLASSPATH] [-out DIR] [-k DEPTH] MAIN_CLASS
 
 <ul>
 <li>Improve performance using multi-threaded processing of flow functions.</li>
+<li>Add a simpler example (e.g. null dereference analysis) as points-to analysis may be too complex to serve as a tutorial</li>
 </ul>
       </section>
     </div>
