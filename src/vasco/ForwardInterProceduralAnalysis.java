@@ -84,10 +84,6 @@ public abstract class ForwardInterProceduralAnalysis<M,N,A> extends InterProcedu
 						// intermediate IN value
 						while (predIterator.hasNext()) {
 							A predOut = context.getValueAfter(predIterator.next());
-							// We want to do IN = IN meet PREDOUT, but to avoid
-							// using same object for
-							// operand and result, we use a temporary flow
-							// object with the TOP value.
 							in = meet(in, predOut);
 						}
 						// Set the IN value at the context

@@ -84,10 +84,6 @@ public abstract class BackwardInterProceduralAnalysis<M,N,A> extends InterProced
 						// intermediate OUT value
 						while (succIterator.hasNext()) {
 							A succIn = context.getValueBefore(succIterator.next());
-							// We want to do IN = IN meet PREDOUT, but to avoid
-							// using same object for
-							// operand and result, we use a temporary flow
-							// object with the TOP value.
 							out = meet(out, succIn);
 						}
 						// Set the OUT value at the context
