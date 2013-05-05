@@ -284,6 +284,9 @@ public abstract class InterProceduralAnalysis<M,N,A> {
 		if (this.mainContext == null) {
 			M mainMethod = getMainMethod();
 			this.mainContext = new Context<M,N,A>(mainMethod, getControlFlowGraph(mainMethod), reverse);
+			if (verbose) {
+				System.out.println("[NEW] X" + mainContext + " " + mainMethod);
+			}
 		}
 		// Return the singleton
 		return this.mainContext;
