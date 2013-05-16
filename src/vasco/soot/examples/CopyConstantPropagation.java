@@ -80,8 +80,29 @@ public class CopyConstantPropagation extends SceneTransformer {
 	}
 
 	public static void main(String args[]) {
-		String classPath = "/home/rohan/Dropbox/HeapAnalysis/test";
-		String mainClass = "ConstantTest";
+		String classPath = ".";		
+		String mainClass = null;
+		
+		/* ------------------- OPTIONS ---------------------- */
+		try {
+			int i=0;
+			while(true){
+				if (args[i].equals("-cp")) {
+					classPath = args[i+1];
+					i += 2;
+				} else {
+					mainClass = args[i];
+					i++;
+					break;
+				}
+			}
+			if (i != args.length || mainClass == null)
+				throw new Exception();
+		} catch (Exception e) {
+			System.out.println("Usage: java vasco.soot.examples.CopyConstantPropagation [-cp CLASSPATH] MAIN_CLASS");
+			System.exit(1);
+		}
+		
 		String[] sootArgs = {
 				"-cp", classPath, "-pp", 
 				"-w", "-app", 
