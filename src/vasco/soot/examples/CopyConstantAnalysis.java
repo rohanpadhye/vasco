@@ -32,7 +32,10 @@ import soot.jimple.InvokeExpr;
 import soot.jimple.ReturnStmt;
 import soot.jimple.Stmt;
 import soot.jimple.internal.JimpleLocal;
-import vasco.soot.DefaultJimpleForwardInterProceduralAnalysis;
+import vasco.Context;
+import vasco.ForwardInterProceduralAnalysis;
+import vasco.ProgramRepresentation;
+import vasco.soot.DefaultJimpleRepresentation;
 
 /**
  * An inter-procedural copy constant propagation analysis.
@@ -43,20 +46,11 @@ import vasco.soot.DefaultJimpleForwardInterProceduralAnalysis;
  * where the operand has a constant value. This type of analysis is commonly referred
  * to as copy constant propagation.</p>
  * 
- * <p><strong>Note</strong>: This class mainly serves as an example or tutorial 
- * for users interested in using the VASCO inter-procedural framework with Soot. 
- * The real advantage of VASCO is the ability to use non-distributive flow functions
- * that cannot be encoded as IFDS or IDE problems. However, such analyses are usually
- * large and complex and may not serve as a good starting point for learning,
- * but interested readers may refer to {@link vasco.callgraph.PointsToAnalysis}.</p>
  * 
  * @author Rohan Padhye
  *
  */
-public class CopyConstantAnalysis extends DefaultJimpleForwardInterProceduralAnalysis<Map<Local, Constant>> {
-
-	// A dummy local which is always non-constant throughout the program (used so that flow functions don't return TOP).
-	private static final Local DUMMY_LOCAL = new JimpleLocal("@dummy", null);
+public class CopyConstantAnalysis extends ForwardInterProceduralAnalysis<SootMethod, Unit, Map<Local, Constant>> {
 	
 	// An artificial local representing returned value of a procedure (used because a method can have multiple return statements).
 	private static final Local RETURN_LOCAL = new JimpleLocal("@return", null);
@@ -78,8 +72,10 @@ public class CopyConstantAnalysis extends DefaultJimpleForwardInterProceduralAna
 			// If RHS is a constant, it is a direct gen
 			output.put(lhs, (Constant) rhs);
 		} else if (rhs instanceof Local) {
-			// Copy constant-status of RHS to LHS (indirect gen)
-			output.put(lhs, input.get(rhs));
+			// Copy constant-status of RHS to LHS (indirect gen), if exists
+			if(input.containsKey(rhs)) {
+				output.put(lhs, input.get(rhs));
+			}
 		} else {
 			// RHS is some compound expression, then LHS is non-constant (only kill)
 			output.put(lhs, null);
@@ -87,7 +83,7 @@ public class CopyConstantAnalysis extends DefaultJimpleForwardInterProceduralAna
 	}
 
 	@Override
-	protected Map<Local, Constant> normalFlowFunction(Unit unit, Map<Local, Constant> inValue) {
+	public Map<Local, Constant> normalFlowFunction(Context<SootMethod, Unit, Map<Local, Constant>> context, Unit unit, Map<Local, Constant> inValue) {
 		// Initialize result to input
 		Map<Local, Constant> outValue = copy(inValue);
 		// Only statements assigning locals matter
@@ -108,9 +104,9 @@ public class CopyConstantAnalysis extends DefaultJimpleForwardInterProceduralAna
 	}
 
 	@Override
-	protected Map<Local, Constant> callEntryFlowFunction(Unit unit, SootMethod calledMethod, Map<Local, Constant> inValue) {
-		// Initialize result to BI (with DUMMY)
-		Map<Local, Constant> entryValue = boundaryValue();
+	public Map<Local, Constant> callEntryFlowFunction(Context<SootMethod, Unit, Map<Local, Constant>> context, SootMethod calledMethod, Unit unit, Map<Local, Constant> inValue) {
+		// Initialise result to empty map
+		Map<Local, Constant> entryValue = topValue();
 		// Map arguments to parameters
 		InvokeExpr ie = ((Stmt) unit).getInvokeExpr();
 		for (int i = 0; i < ie.getArgCount(); i++) {
@@ -129,8 +125,8 @@ public class CopyConstantAnalysis extends DefaultJimpleForwardInterProceduralAna
 	}
 	
 	@Override
-	protected Map<Local, Constant> callExitFlowFunction(Unit unit, SootMethod calledMethod, Map<Local, Constant> exitValue) {
-		// Initialize result to an empty value
+	public Map<Local, Constant> callExitFlowFunction(Context<SootMethod, Unit, Map<Local, Constant>> context, SootMethod calledMethod, Unit unit, Map<Local, Constant> exitValue) {
+		// Initialise result to an empty value
 		Map<Local, Constant> afterCallValue = topValue();
 		// Only propagate constants for return values
 		if (unit instanceof AssignStmt) {
@@ -142,8 +138,8 @@ public class CopyConstantAnalysis extends DefaultJimpleForwardInterProceduralAna
 	}
 
 	@Override
-	protected Map<Local, Constant> callLocalFlowFunction(Unit unit, Map<Local, Constant> inValue) {
-		// Initialize result to the input
+	public Map<Local, Constant> callLocalFlowFunction(Context<SootMethod, Unit, Map<Local, Constant>> context, Unit unit, Map<Local, Constant> inValue) {
+		// Initialise result to the input
 		Map<Local, Constant> afterCallValue = copy(inValue);
 		// Remove information for return value (as it's value will flow from the call)
 		if (unit instanceof AssignStmt) {
@@ -154,13 +150,10 @@ public class CopyConstantAnalysis extends DefaultJimpleForwardInterProceduralAna
 		return afterCallValue;
 		
 	}
-
+	
 	@Override
-	public Map<Local, Constant> boundaryValue() {
-		// BI is actually TOP with an augmented DUMMY local (non-constant) to ensure work-list traversal
-		Map<Local, Constant> bi = topValue();
-		bi.put(DUMMY_LOCAL, null);
-		return bi;
+	public Map<Local, Constant> boundaryValue(SootMethod method) {
+		return topValue();
 	}
 
 	@Override
@@ -196,6 +189,11 @@ public class CopyConstantAnalysis extends DefaultJimpleForwardInterProceduralAna
 	@Override
 	public Map<Local, Constant> topValue() {
 		return new HashMap<Local, Constant>();
+	}
+
+	@Override
+	public ProgramRepresentation<SootMethod, Unit> programRepresentation() {
+		return DefaultJimpleRepresentation.v();
 	}
 
 }

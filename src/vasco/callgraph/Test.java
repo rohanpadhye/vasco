@@ -177,7 +177,7 @@ public class Test {
 		Stack<Context<SootMethod,Unit,PointsToGraph>> stack = new Stack<Context<SootMethod,Unit,PointsToGraph>>();
 		
 		// Initialise it with the main context
-		Context<SootMethod,Unit,PointsToGraph> source = pta.getMainContext();
+		Context<SootMethod,Unit,PointsToGraph> source = pta.getContexts(Scene.v().getMainMethod()).get(0);
 		stack.push(source);
 
 		// Now recursively (using stacks) mark reachable contexts
@@ -237,8 +237,8 @@ public class Test {
 	public static void dumpCallChainStats(PointsToAnalysis pta, int maxDepth) throws FileNotFoundException {		
 		// Initialise output stream
 		PrintWriter txt = new PrintWriter(new FileOutputStream(outputDirectory + "/chains.txt"), true);
-		Context<SootMethod,Unit,?> mainContext = pta.getMainContext();
-		SootMethod mainMethod = pta.getMainMethod();
+		Context<SootMethod,Unit,?> mainContext = pta.getContexts(Scene.v().getMainMethod()).get(0);
+		SootMethod mainMethod = Scene.v().getMainMethod();
 		
 		txt.println("FCPA Chains");
 		txt.println("------------");

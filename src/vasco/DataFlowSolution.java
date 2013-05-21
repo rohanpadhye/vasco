@@ -48,7 +48,7 @@ public class DataFlowSolution<N,A> {
 	 * @param inValues a map of nodes to data flow values at their entry
 	 * @param outValues a map of nodes to data flow values at their exit
 	 */
-	DataFlowSolution(Map<N,A> inValues, Map<N,A> outValues) {
+	public DataFlowSolution(Map<N,A> inValues, Map<N,A> outValues) {
 		this.inValues = inValues;
 		this.outValues = outValues;
 	}

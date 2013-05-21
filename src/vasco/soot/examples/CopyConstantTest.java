@@ -33,7 +33,7 @@ import vasco.DataFlowSolution;
  * 
  * @author Rohan Padhye
  */
-public class CopyConstantPropagation extends SceneTransformer {
+public class CopyConstantTest extends SceneTransformer {
 	
 	private CopyConstantAnalysis analysis;
 
@@ -56,7 +56,7 @@ public class CopyConstantPropagation extends SceneTransformer {
 		}		
 	}
 	
-	private String formatConstants(Map<Local, Constant> value) {
+	public static String formatConstants(Map<Local, Constant> value) {
 		if (value == null) {
 			return "";
 		}
@@ -99,7 +99,7 @@ public class CopyConstantPropagation extends SceneTransformer {
 			if (i != args.length || mainClass == null)
 				throw new Exception();
 		} catch (Exception e) {
-			System.out.println("Usage: java vasco.soot.examples.CopyConstantPropagation [-cp CLASSPATH] MAIN_CLASS");
+			System.out.println("Usage: java vasco.soot.examples.CopyConstantTest [-cp CLASSPATH] MAIN_CLASS");
 			System.exit(1);
 		}
 		
@@ -117,7 +117,7 @@ public class CopyConstantPropagation extends SceneTransformer {
 				"-main-class", mainClass,
 				"-f", "none", mainClass 
 		};
-		CopyConstantPropagation cgt = new CopyConstantPropagation();
+		CopyConstantTest cgt = new CopyConstantTest();
 		PackManager.v().getPack("wjtp").add(new Transform("wjtp.ccp", cgt));
 		soot.Main.main(sootArgs);
 	}

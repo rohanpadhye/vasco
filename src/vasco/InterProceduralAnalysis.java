@@ -22,10 +22,9 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.NavigableSet;
 import java.util.Set;
-import java.util.Stack;
-
-import soot.toolkits.graph.DirectedGraph;
+import java.util.TreeSet;
 
 /**
  * A generic inter-procedural analysis which is fully context-sensitive.
@@ -43,16 +42,14 @@ import soot.toolkits.graph.DirectedGraph;
  * @param <N> the type of a node in the CFG
  * @param <A> the type of a data flow value
  * 
- * @see ForwardInterProceduralAnalysis
- * @see BackwardInterProceduralAnalysis
  * @see Context
  * @see ContextTransitionTable
  * @see CallSite
  */
 public abstract class InterProceduralAnalysis<M,N,A> {
-
-	/** A stack of contexts to analyse. */
-	protected final Stack<Context<M,N,A>> analysisStack;
+	
+	/** A work-list of contexts to process. */
+	protected final NavigableSet<Context<M,N,A>> worklist;
 
 	/** A mapping from methods to a list of contexts for quick lookups. */
 	protected final Map<M,List<Context<M,N,A>>> contexts;
@@ -63,10 +60,6 @@ public abstract class InterProceduralAnalysis<M,N,A> {
 	 */
 	protected final ContextTransitionTable<M,N,A> contextTransitions;
 
-	/**
-	 * A reference to the analysis context of the <tt>main</tt> method.
-	 */
-	protected Context<M,N,A> mainContext;
 
 	/**
 	 * <tt>true</tt> if the direction of analysis is backward, or <tt>false</tt>
@@ -85,9 +78,9 @@ public abstract class InterProceduralAnalysis<M,N,A> {
 	 * been resolved). This is not safe for use in analyses whose results
 	 * will be directly used later (e.g. liveness analysis).</p>
 	 * 
-	 * <p>Memory is freed when a context is popped off the stack and no context
-	 * reachable from it in the transition table is also on the stack. This 
-	 * ensures that the popped context will not be pushed again on the stack
+	 * <p>Memory is freed when a context is removed from the work-list and no context
+	 * reachable from it in the transition table is also on the work-list. This 
+	 * ensures that the removed context will not be added again on the work-list
 	 * for re-analysis of any statement.</p>
 	 * 
 	 * <p>Note that the data flow values at the entry/exit of the context are
@@ -105,7 +98,7 @@ public abstract class InterProceduralAnalysis<M,N,A> {
 	protected boolean verbose;
 	
 	/**
-	 * Constructs a new interprocedural analysis.
+	 * Constructs a new inter-procedural analysis.
 	 * 
 	 * @param reverse <tt>true</tt> if the analysis is in the reverse direction,
 	 *            <tt>false</tt> if it is in the forward direction
@@ -120,18 +113,27 @@ public abstract class InterProceduralAnalysis<M,N,A> {
 
 		// Initialise context transition table
 		contextTransitions = new ContextTransitionTable<M,N,A>();
-
-		// Initialise the analysis stack.
-		analysisStack = new Stack<Context<M,N,A>>();
+		
+		// Initialise the work-list
+		worklist = new TreeSet<Context<M,N,A>>();
 
 	}
 
 	/**
-	 * Returns the initial data flow value at the entry (exit) of the program.
+	 * Returns the initial data flow value at the program entry points. For
+	 * forward analyses this is the IN value at the ENTRY to each entry method,
+	 * while for backward analyses this is the OUT value at the EXIT to each
+	 * entry method.
 	 * 
+	 * <p>Note that this method will be called exactly once per entry point 
+	 * specified by the program representation.</p>
+	 * 
+	 * @param entryPoint an entry point specified by the program representation
 	 * @return the data flow value at the boundary
+	 * 
+	 * @see ProgramRepresentation#getEntryPoints()
 	 */
-	public abstract A boundaryValue();
+	public abstract A boundaryValue(M entryPoint);
 
 	/**
 	 * Returns a copy of the given data flow value.
@@ -145,65 +147,29 @@ public abstract class InterProceduralAnalysis<M,N,A> {
 	 * Performs the actual data flow analysis.
 	 * 
 	 * <p>
-	 * A stack of contexts is maintained, each with it's own work-list of CFG nodes
-	 * to process. For each node removed from the work-list of the context at the top 
-	 * of the stack, the meet of values along incoming edges (in the direction of analysis) is computed and
-	 * then the flow function is processed by invoking {@link #flowFunction(Context, Object, Object)}.
-	 * If the resulting data flow value has changed, then nodes along outgoing edges
+	 * A work-list of contexts is maintained, each with it's own work-list of CFG nodes
+	 * to process. For each node removed from the work-list of the newest context, 
+	 * the meet of values along incoming edges (in the direction of analysis) is computed and
+	 * then the flow function is processed depending on whether the node contains a call 
+	 * or not. If the resulting data flow value has changed, then nodes along outgoing edges
 	 * (in the direction of analysis) are also added to the work-list. </p>
 	 * 
 	 * <p>
-	 * Analysis starts with the context for the main method with the boundary value
-	 * as the first element on the stack.
+	 * Analysis starts with the context for the program entry points with the given
+	 * boundary values and ends when the work-list is empty.
 	 * </p>
 	 * 
-	 * <p>
-	 * When a work-list is empty (i.e. all its node are processed), it's context is popped
-	 * off the stack. Memory is freed if {@link #freeResultsOnTheFly} is set and if no
-	 * reachable contexts are also on the stack. 
-	 * </p>
-	 * 
-	 * <p>Inter-procedural analysis concludes when the stack is empty.</p>
-	 * 
-	 * @see #flowFunction(Context, Object, Object)
-	 * @see #getMainMethod()
-	 * @see #boundaryValue()
+	 * <p>See the SOAP '13 paper for the full algorithm in Figure 1.</p>
 	 * 
 	 */
 	public abstract void doAnalysis();
 
-	/**
-	 * Processes a node of the control flow graph.
-	 * 
-	 * <p>
-	 * The flow function processes a data flow value at one end of a given node
-	 * for a given context and results in a data flow value at the other
-	 * end. 
-	 * </p>
-	 * 
-	 * <p>
-	 * Implementations will invoke
-	 * {@link #processCall(Context, Object, Object, Object) processCall} to handle
-	 * procedure calls when encountered.
-	 * </p>
-	 * 
-	 * <p>If the flow function returns <tt>null</tt>, the data flow value
-	 * is not changed (that is, the previous value at that point is retained).
-	 * Ideally, the flow  function returns <tt>null</tt> if and only if 
-	 * {@link #processCall(Context, Object, Object, Object) processCall} returns <tt>null</tt>.
-	 * 
-	 * @param context the context which is being analysed
-	 * @param node a node in the control flow graph
-	 * @param value the data flow value to process
-	 * @return the result of the flow function if successful, or <tt>null</tt> if no result is available
-	 */
-	protected abstract A flowFunction(Context<M,N,A> context, N node, A value);
 
 	/**
 	 * Returns the callers of a value context.
 	 * 
 	 * @param target the value context
-	 * @return the call-sites which transition to the analysis context
+	 * @return the call-sites which transition to the value context
 	 */
 	public Set<CallSite<M,N,A>> getCallers(Context<M,N,A> target) {
 		return this.contextTransitions.getCallers(target);
@@ -267,47 +233,6 @@ public abstract class InterProceduralAnalysis<M,N,A> {
 	}
 
 	/**
-	 * Returns a control flow graph for the given method.
-	 * 
-	 * @param method the method whose CFG to construct
-	 * @return a control flow graph for the given method
-	 */
-	public abstract DirectedGraph<N> getControlFlowGraph(M method);
-
-	/**
-	 * Returns a reference to the main context.
-	 * 
-	 * @return the value context for the <tt>main</tt> method
-	 */
-	public Context<M,N,A> getMainContext() {
-		// Ensure the singleton has been created
-		if (this.mainContext == null) {
-			M mainMethod = getMainMethod();
-			this.mainContext = new Context<M,N,A>(mainMethod, getControlFlowGraph(mainMethod), reverse);
-			if (verbose) {
-				System.out.println("[NEW] X" + mainContext + " " + mainMethod);
-			}
-		}
-		// Return the singleton
-		return this.mainContext;
-	}
-
-	/**
-	 * Returns a reference to the <tt>main</tt> method.
-	 * 
-	 * @return a reference to the <tt>main</tt> method.
-	 */
-	public abstract M getMainMethod();
-
-	/**
-	 * Returns all methods for which at least one context was created.
-	 * @return an unmodifiable set of analysed methods
-	 */
-	public Set<M> getMethods() {
-		return Collections.unmodifiableSet(contexts.keySet());
-	}
-	
-	/**
 	 * Returns a meet-over-valid-paths solution by merging data flow
 	 * values across contexts for each program point.
 	 * 
@@ -321,7 +246,7 @@ public abstract class InterProceduralAnalysis<M,N,A> {
 		Map<N,A> outValues = new HashMap<N,A>();
 		// Merge over all contexts
 		for (M method : contexts.keySet()) {
-			for (N node : getControlFlowGraph(method)) {
+			for (N node : programRepresentation().getControlFlowGraph(method)) {
 				A in = topValue();
 				A out = topValue();
 				for (Context<M,N,A> context : contexts.get(method)) {
@@ -334,6 +259,14 @@ public abstract class InterProceduralAnalysis<M,N,A> {
 		}
 		// Return data flow solution
 		return new DataFlowSolution<N,A>(inValues, outValues);
+	}
+	
+	/**
+	 * Returns all methods for which at least one context was created.
+	 * @return an unmodifiable set of analysed methods
+	 */
+	public Set<M> getMethods() {
+		return Collections.unmodifiableSet(contexts.keySet());
 	}
 
 	/**
@@ -357,52 +290,14 @@ public abstract class InterProceduralAnalysis<M,N,A> {
 	public abstract A meet(A op1, A op2);
 
 	/**
-	 * Processes a call statement.
+	 * Returns a program representation on top of which the inter-procedural
+	 * analysis runs. The program representation is used to build control
+	 * flow graphs of individual procedures and resolve targets of virtual
+	 * call sites.
 	 * 
-	 * <p>
-	 * Retrieves a value context for the callee if one exists with the given
-	 * entry (exit) flow, or else creates a new one and adds the transition to
-	 * the context transition table.
-	 * </p>
-	 * 
-	 * <p>
-	 * If the callee context has already been analysed, returns the resulting 
-	 * value (which may be the exit or entry flow depending on the analysis
-	 * direction). For newly created contexts the result would be <tt>null</tt>,
-	 * as they are obviously not analysed even once.
-	 * </p>
-	 * 
-	 * <p>
-	 * Note that this method is not directly called by {@link #doAnalysis() doAnalysis}, but
-	 * is instead called by {@link #flowFunction(Context, Object, Object) flowFunction} when a method
-	 * call statement is encountered. The reason for this design decision is
-	 * that client analyses may want their own setup and tear down sequences
-	 * before a call is made (similar to edge flow functions at the call and
-	 * return site). Also, analyses may want to choose which method call to
-	 * process at an invoke statement in the case of virtual calls (e.g. a
-	 * points-to analysis may build the call-graph on-the-fly).
-	 * </p>
-	 * 
-	 * <p>Therefore, it is the responsibility of the client analysis to detect
-	 * an invoke expression when implementing {@link #flowFunction(Context, Object, Object) flowFunction},
-	 * and suitably invoke {@link #processCall(Context, Object, Object, Object) processCall} with 
-	 * the input data flow value which may be different from the IN/OUT value of the node due to
-	 * handling of arguments, etc. Similarly, the result of {@link #processCall(Context, Object, Object, Object) processCall}
-	 * may be modified by the client to handle return values, etc. before returning from  {@link #flowFunction(Context, Object, Object) flowFunction}.
-	 * Ideally,  {@link #flowFunction(Context, Object, Object) flowFunction} should return
-	 * <tt>null</tt> if and only if {@link #processCall(Context, Object, Object, Object) processCall} 
-	 * returns <tt>null</tt>.
-	 * 
-	 * @param callerContext the analysis context at the call-site
-	 * @param callNode the calling statement
-	 * @param calledMethod the method being called
-	 * @param value the data flow value at the entry (exit) of the called method for a
-	 *            forward (backward) analysis.
-	 * @return the data flow value at the exit (entry) of the called method for
-	 *         a forward (backward) analysis, if available, or <tt>null</tt> if
-	 *         unavailable.
+	 * @return The program representation underlying this analysis
 	 */
-	protected abstract A processCall(Context<M,N,A> callerContext, N callNode, M calledMethod, A value);
+	public abstract ProgramRepresentation<M,N> programRepresentation();
 
 	/**
 	 * Returns the default data flow value (lattice top).

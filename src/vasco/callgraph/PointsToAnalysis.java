@@ -53,11 +53,11 @@ import soot.jimple.StaticInvokeExpr;
 import soot.jimple.Stmt;
 import soot.jimple.VirtualInvokeExpr;
 import soot.jimple.internal.JNewArrayExpr;
-import soot.toolkits.graph.DirectedGraph;
-import soot.toolkits.graph.ExceptionalUnitGraph;
 import vasco.CallSite;
 import vasco.Context;
-import vasco.ForwardInterProceduralAnalysis;
+import vasco.OldForwardInterProceduralAnalysis;
+import vasco.ProgramRepresentation;
+import vasco.soot.DefaultJimpleRepresentation;
 
 /**
  * An inter-procedural analysis for constructing a context-sensitive call graph
@@ -71,7 +71,7 @@ import vasco.ForwardInterProceduralAnalysis;
  * 
  * @author Rohan Padhye
  */
-public class PointsToAnalysis extends ForwardInterProceduralAnalysis<SootMethod,Unit,PointsToGraph> {
+public class PointsToAnalysis extends OldForwardInterProceduralAnalysis<SootMethod,Unit,PointsToGraph> {
 
 	private static final SootMethod DUMMY_METHOD = new SootMethod("DUMMY_METHOD", Collections.EMPTY_LIST, Scene.v().getObjectType());
 	
@@ -115,10 +115,12 @@ public class PointsToAnalysis extends ForwardInterProceduralAnalysis<SootMethod,
 	 * initialised to an array of strings.
 	 */
 	@Override
-	public PointsToGraph boundaryValue() {
-		PointsToGraph entryValue = new PointsToGraph();
-		// System generated globals
+	public PointsToGraph boundaryValue(SootMethod entryPoint) {
+		// For now we only support entry to the main method
+		assert(entryPoint == Scene.v().getMainMethod());
 		
+		// Ok, start setting up entry value
+		PointsToGraph entryValue = new PointsToGraph();		
 	
 		// Locals of main... (only reference types)
 		SootMethod mainMethod = Scene.v().getMainMethod();
@@ -147,7 +149,7 @@ public class PointsToAnalysis extends ForwardInterProceduralAnalysis<SootMethod,
 	}
 
 	/**
-	 * Performs operations on ponts-to graphs depending on the statement inside
+	 * Performs operations on points-to graphs depending on the statement inside
 	 * a CFG node. 
 	 */
 	@Override
@@ -367,19 +369,6 @@ public class PointsToAnalysis extends ForwardInterProceduralAnalysis<SootMethod,
 
 	}
 
-	/**
-	 * Returns an {@link ExceptionalUnitGraph} for a given method.
-	 * 
-	 */
-	@Override
-	public DirectedGraph<Unit> getControlFlowGraph(SootMethod method) {
-		return new ExceptionalUnitGraph(method.getActiveBody());
-	}
-
-	@Override
-	public SootMethod getMainMethod() {
-		return Scene.v().getMainMethod();
-	}
 
 	/**
 	 * Computes the targets of an invoke expression using a given points-to graph.
@@ -660,5 +649,10 @@ public class PointsToAnalysis extends ForwardInterProceduralAnalysis<SootMethod,
 	@Override
 	public PointsToGraph topValue() {
 		return new PointsToGraph();
+	}
+
+	@Override
+	public ProgramRepresentation<SootMethod, Unit> programRepresentation() {
+		return DefaultJimpleRepresentation.v();
 	}
 }
