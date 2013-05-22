@@ -47,9 +47,6 @@ public class DefaultJimpleRepresentation implements ProgramRepresentation<SootMe
 	// Private constructor, see #v() to retrieve singleton object
 	private DefaultJimpleRepresentation(){}
 	
-	// The singleton object
-	private static DefaultJimpleRepresentation singleton = new DefaultJimpleRepresentation();
-
 	/**
 	 * Returns a singleton list containing the <code>main</code> method.
 	 * @see Scene#getMainMethod()
@@ -94,6 +91,9 @@ public class DefaultJimpleRepresentation implements ProgramRepresentation<SootMe
 		return targets;
 	}
 
+	// The singleton object
+	private static DefaultJimpleRepresentation singleton = new DefaultJimpleRepresentation();
+	
 	/**
 	 * Returns a reference to the singleton object of this class.
 	 */

@@ -186,11 +186,18 @@ public class CopyConstantAnalysis extends ForwardInterProceduralAnalysis<SootMet
 		return result;
 	}
 
+	/**
+	 * Returns an empty map.
+	 */
 	@Override
 	public Map<Local, Constant> topValue() {
 		return new HashMap<Local, Constant>();
 	}
 
+	/**
+	 * Returns a default jimple representation.
+	 * @see DefaultJimpleRepresentation
+	 */
 	@Override
 	public ProgramRepresentation<SootMethod, Unit> programRepresentation() {
 		return DefaultJimpleRepresentation.v();

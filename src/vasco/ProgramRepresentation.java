@@ -22,7 +22,7 @@ import java.util.List;
 import soot.toolkits.graph.DirectedGraph;
 
 /**
- * A program representation is a wrapper for the API used by the underlying
+ * A wrapper for the API used by the underlying
  * intermediate representation over which inter-procedural analysis is to be
  * performed.
  * 

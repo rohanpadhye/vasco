@@ -71,10 +71,6 @@ public class CopyConstantTest extends SceneTransformer {
 		return sb.toString();
 	}
 	
-	/**
-	 * Returns a reference to the {@link CopyConstantAnalysis} object. 
-	 * @return a reference to the {@link CopyConstantAnalysis} object
-	 */
 	public CopyConstantAnalysis getAnalysis() {
 		return analysis;
 	}
