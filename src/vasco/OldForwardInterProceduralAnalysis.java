@@ -25,8 +25,7 @@ import java.util.Set;
 import java.util.Stack;
 
 /**
- * A generic forward-flow inter-procedural analysis which is fully
- * context-sensitive.
+ * A generic forward-flow inter-procedural analysis which is fully context-sensitive. 
  * 
  * <p>
  * This class essentially captures a forward data flow problem which can be
@@ -45,6 +44,9 @@ import java.util.Stack;
  * @param <N> the type of a node in the CFG
  * @param <A> the type of a data flow value
  * 
+ * @deprecated This is the old API from the initial SOAP '13 submission without call/return flow functions. 
+ * It is only here for a temporary period while the {@link vasco.callgraph.PointsToAnalysis PointsToAnalysis} class is migrated to the new API.
+ * After that work is done, this class will be permanently removed from VASCO. 
  */
 public abstract class OldForwardInterProceduralAnalysis<M,N,A> extends InterProceduralAnalysis<M,N,A> {
 

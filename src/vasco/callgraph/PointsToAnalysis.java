@@ -69,6 +69,11 @@ import vasco.soot.DefaultJimpleRepresentation;
  * <p>The analysis uses {@link PointsToGraph} objects as data flow values, which
  * in turn abstracts heap locations using allocation sites.<p>
  * 
+ * <p><strong>Warning!</strong> The current implementation of this class uses
+ * the old API (see {@link OldForwardInterProceduralAnalysis}) without separate
+ * call/return flow functions. The developer is currently in the process of migrating
+ * this implementation to the new API (see {@link vasco.ForwardInterProceduralAnalysis ForwardInterProceduralAnalysis}).</p>
+ * 
  * @author Rohan Padhye
  */
 public class PointsToAnalysis extends OldForwardInterProceduralAnalysis<SootMethod,Unit,PointsToGraph> {
