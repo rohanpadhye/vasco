@@ -34,6 +34,10 @@ Where:
 
 This will generate a bunch of CSV files in the output directory containing statistics of analyzed methods, contexts, and call chains.
 
+## Other Examples ##
+
+The package `vasco.soot.examples` contains some example analyses implemented for Soot such as **copy constant propagation** and a simple **sign analysis**.
+
 ## Pending Tasks ##
 
 ### Points-to analysis: ###
@@ -44,4 +48,3 @@ This will generate a bunch of CSV files in the output directory containing stati
 ### Inter-procedural framework: ###
 
 - Improve performance using multi-threaded processing of flow functions.
-- Add a simpler example (e.g. null dereference analysis) as points-to analysis may be too complex to serve as a tutorial
