@@ -18,9 +18,11 @@
 package vasco.soot;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import soot.Scene;
 import soot.SootMethod;
@@ -44,8 +46,13 @@ import vasco.ProgramRepresentation;
  */
 public class DefaultJimpleRepresentation implements ProgramRepresentation<SootMethod, Unit> {
 	
+	// Cache for control flow graphs
+	private Map<SootMethod, DirectedGraph<Unit>> cfgCache;
+	
 	// Private constructor, see #v() to retrieve singleton object
-	private DefaultJimpleRepresentation(){}
+	private DefaultJimpleRepresentation() {
+		cfgCache = new HashMap<SootMethod, DirectedGraph<Unit>>();
+	}
 	
 	/**
 	 * Returns a singleton list containing the <code>main</code> method.
@@ -61,7 +68,10 @@ public class DefaultJimpleRepresentation implements ProgramRepresentation<SootMe
 	 */
 	@Override
 	public DirectedGraph<Unit> getControlFlowGraph(SootMethod method) {
-		return new ExceptionalUnitGraph(method.getActiveBody());
+		if (cfgCache.containsKey(method) == false) {
+			cfgCache.put(method, new ExceptionalUnitGraph(method.getActiveBody()));
+		}
+		return cfgCache.get(method);
 	}
 
 	/**
