@@ -27,6 +27,7 @@ import java.util.Map;
 import soot.MethodContext;
 import soot.MethodOrMethodContext;
 import soot.Scene;
+import soot.SootMethod;
 import soot.Unit;
 import soot.jimple.toolkits.callgraph.ContextSensitiveEdge;
 import soot.toolkits.graph.DirectedGraph;
@@ -48,11 +49,11 @@ import vasco.ProgramRepresentation;
 public class ContextSensitiveJimpleRepresentation implements ProgramRepresentation<MethodOrMethodContext, Unit> {
 	
 	// Cache for control flow graphs
-	private Map<MethodOrMethodContext, DirectedGraph<Unit>> cfgCache;
+	private Map<SootMethod, DirectedGraph<Unit>> cfgCache;
 	
 	// Private constructor, see #v() to retrieve singleton object
 	private ContextSensitiveJimpleRepresentation() {
-		cfgCache = new HashMap<MethodOrMethodContext, DirectedGraph<Unit>>();
+		cfgCache = new HashMap<SootMethod, DirectedGraph<Unit>>();
 	}
 	
 	/**
@@ -69,10 +70,10 @@ public class ContextSensitiveJimpleRepresentation implements ProgramRepresentati
 	 */
 	@Override
 	public DirectedGraph<Unit> getControlFlowGraph(MethodOrMethodContext momc) {
-		if (cfgCache.containsKey(momc) == false) {
-			cfgCache.put(momc, new ExceptionalUnitGraph(momc.method().getActiveBody()));
+		if (cfgCache.containsKey(momc.method()) == false) {
+			cfgCache.put(momc.method(), new ExceptionalUnitGraph(momc.method().getActiveBody()));
 		}
-		return cfgCache.get(momc);
+		return cfgCache.get(momc.method());
 	}
 
 	/**
