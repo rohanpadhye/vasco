@@ -7,7 +7,7 @@ The framework classes are present in the package `vasco` and are described in th
 
 You can use these classes directly with any program analysis toolkit or intermediate representation, although they work best with [Soot](http://www.sable.mcgill.ca/soot) and it's *Jimple* representation.
 
-This framework was developed as a part of a larger M.Tech. project on precise heap alias analysis by [Rohan Padhye](http://www.cse.iitb.ac.in/~rohanpadhye) under the supervision of [Prof. Uday Khedker](http://www.cse.iitb.ac.in/~uday) at the [Indian Institute of Technology Bombay](http://www.iitb.ac.in) ([Department of Computer Science and Engineering](http://www.cse.iitb.ac.in)).
+This framework was developed as a part of a larger M.Tech. project on precise heap alias analysis by [Rohan Padhye](http://www.cse.iitb.ac.in/~rohanpadhye) under the supervision of [Prof. Uday Khedker](http://www.cse.iitb.ac.in/~uday) at the [Indian Institute of Technology Bombay](http://www.iitb.ac.in) ([Department of Computer Science and Engineering](http://www.cse.iitb.ac.in/alumni/~rohanpadhye11).
 
 ## API Documentation ##
 
