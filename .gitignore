@@ -4,3 +4,4 @@ sootOutput
 *.class
 *.jar
 *~
+out
