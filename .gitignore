@@ -1,8 +1,7 @@
 bin
 doc
 sootOutput
-.classpath
-.project
 *.class
 *.jar
 *~
+out

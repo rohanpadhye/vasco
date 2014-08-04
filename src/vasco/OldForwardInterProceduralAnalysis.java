@@ -54,7 +54,7 @@ public abstract class OldForwardInterProceduralAnalysis<M,N,A> extends InterProc
 	public OldForwardInterProceduralAnalysis() {
 		// Kick-up to the super with the FORWARD direction.
 		super(false);
-
+		analysisStack = new Stack<Context<M,N,A>>();
 	}
 	
 	protected Stack<Context<M,N,A>> analysisStack;
