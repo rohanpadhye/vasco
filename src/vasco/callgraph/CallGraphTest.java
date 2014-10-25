@@ -43,11 +43,11 @@ import vasco.ContextTransitionTable;
  * A main class for testing call graph construction using a Flow and Context
  * Sensitive Points-to Analysis (FCPA).
  * 
- * <p>Usage: <tt>java vasco.callgraph.Test [-cp CLASSPATH] [-out DIR] [-k DEPTH] MAIN_CLASS</tt></p>
+ * <p>Usage: <tt>java vasco.callgraph.CallGraphTest [-cp CLASSPATH] [-out DIR] [-k DEPTH] MAIN_CLASS</tt></p>
  * 
  * @author Rohan Padhye
  */
-public class Test {
+public class CallGraphTest {
 	
 	private static String outputDirectory;
 
@@ -79,7 +79,7 @@ public class Test {
 			if (i != args.length || mainClass == null)
 				throw new Exception();
 		} catch (Exception e) {
-			System.out.println("Usage: java vasco.callgraph.Test [-cp CLASSPATH] [-out DIR] [-k DEPTH] MAIN_CLASS");
+			System.out.println("Usage: java vasco.callgraph.CallGraphTest [-cp CLASSPATH] [-out DIR] [-k DEPTH] MAIN_CLASS");
 			System.exit(1);
 		}
 

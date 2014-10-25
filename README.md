@@ -22,7 +22,7 @@ A sample use of this framework can be found in the package `vasco.callgraph` whi
 To execute the tests as described in the paper, ensure that Soot is in your class path and run:
 
 <code>
-java vasco.callgraph.Test [-cp CLASSPATH] [-out DIR] [-k DEPTH] MAIN_CLASS
+java vasco.callgraph.CallGraphTest [-cp CLASSPATH] [-out DIR] [-k DEPTH] MAIN_CLASS
 </code>
 
 Where:
@@ -33,6 +33,12 @@ Where:
 - `MAIN_CLASS` is the entry point to the program
 
 This will generate a bunch of CSV files in the output directory containing statistics of analyzed methods, contexts, and call chains.
+
+### Using Generated Call Graphs ###
+
+To use the generated call graphs progmatically in your own Soot-based analysis, make sure to add the `vasco.callgraph.CallGraphTransformer` to Soot's analysis `PackManager` (see code in `CallGraphTest.main()` for how to do this) which set's the call-graphs in the global `Scene` appropriately.
+
+Any Soot-based analysis that you add to the pipe-line after the `CallGraphTransformer` can make use of the generated call-graphs by calling `Scene.v().getCallGraph()` or `Scene.v().getContextSensitiveCallGraph()` as you would with the results of SPARK and PADDLE respectively.
 
 ## Other Examples ##
 
