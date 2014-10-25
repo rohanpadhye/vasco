@@ -1,6 +1,6 @@
 package tests;
 
-public class Test1 {
+public class CallGraphTestCase {
 	
 	static class A {
 		void foo() { bar(); }
