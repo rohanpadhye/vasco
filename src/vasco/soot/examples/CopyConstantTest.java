@@ -95,7 +95,7 @@ public class CopyConstantTest extends SceneTransformer {
 			if (i != args.length || mainClass == null)
 				throw new Exception();
 		} catch (Exception e) {
-			System.out.println("Usage: java vasco.soot.examples.CopyConstantTest [-cp CLASSPATH] MAIN_CLASS");
+			System.err.println("Usage: java vasco.soot.examples.CopyConstantTest [-cp CLASSPATH] MAIN_CLASS");
 			System.exit(1);
 		}
 		

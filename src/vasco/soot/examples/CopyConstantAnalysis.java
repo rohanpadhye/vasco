@@ -56,7 +56,7 @@ public class CopyConstantAnalysis extends ForwardInterProceduralAnalysis<SootMet
 	private static final Local RETURN_LOCAL = new JimpleLocal("@return", null);
 	
 	// Simply constructs a forward flow inter-procedural analysis with the VERBOSE option set.
-	CopyConstantAnalysis() {
+	public CopyConstantAnalysis() {
 		super();
 		verbose = true;
 	}
