@@ -170,11 +170,11 @@ public abstract class BackwardInterProceduralAnalysis<M,N,A> extends InterProced
 					for (N predecessors : currentContext.getControlFlowGraph().getPredsOf(node)) {
 						currentContext.getWorkList().add(predecessors);
 					}
-					// If the unit is in HEADS, then we have at least one
-					// path to the start of the method, so add the NULL unit
-					if (currentContext.getControlFlowGraph().getHeads().contains(node)) {
-						currentContext.getWorkList().add(null);
-					}
+				}
+				// If the unit is in HEADS, then we have at least one
+				// path to the start of the method, so add the NULL unit
+				if (currentContext.getControlFlowGraph().getHeads().contains(node)) {
+					currentContext.getWorkList().add(null);
 				}
 			} else {
 				// NULL unit, which means the end of the method.
