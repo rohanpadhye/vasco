@@ -170,11 +170,11 @@ public abstract class ForwardInterProceduralAnalysis<M,N,A> extends InterProcedu
 					for (N successor : currentContext.getControlFlowGraph().getSuccsOf(node)) {
 						currentContext.getWorkList().add(successor);
 					}
-					// If the unit is in TAILS, then we have at least one
-					// path to the end of the method, so add the NULL unit
-					if (currentContext.getControlFlowGraph().getTails().contains(node)) {
-						currentContext.getWorkList().add(null);
-					}
+				}
+				// If the unit is in TAILS, then we have at least one
+				// path to the end of the method, so add the NULL unit
+				if (currentContext.getControlFlowGraph().getTails().contains(node)) {
+					currentContext.getWorkList().add(null);
 				}
 			} else {
 				// NULL unit, which means the end of the method.
