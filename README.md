@@ -44,13 +44,15 @@ Any Soot-based analysis that you add to the pipe-line after the `CallGraphTransf
 
 The package `vasco.soot.examples` contains some example analyses implemented for Soot such as **copy constant propagation** and a simple **sign analysis**.
 
-## Pending Tasks ##
+## Limitations ##
 
-### Points-to analysis: ###
+Although the implementation of VASCO captures all the theory presented in the SOAP'13 paper, it still requires work to make it useful in the real world.
 
-- Construct Soot-friendly results for the constructed call-graph (`soot.jimple.toolkits.callgraph.CallGraph` and `soot.jimple.toolkits.callgraph.ContextSensitiveCallGraph`).
-- Handle Thread.start() calls to support multi-threaded programs.
+The following is a list of limitations of this framework, which need to be addressed. **Any help (suggestions or code) in addressing these issues would be greatly appreciated**.
 
-### Inter-procedural framework: ###
+- Native methods are not handled by the `DefaultJimpleRepresentation`. How to approximate the effect of methods whose bodies are not available for analysis is an open question and probably depends on the nature of the analysis.
+- The JRE is not modelled. For example, `System.in` and `System.out` have initial values of `null` in the source code of `java.lang.System`. The JVM injects values for standard input/output streams at runtime. Other such JVM behaviours are not correctly modelled.
+- Multi-threaded programs are not currently supported. Although some frameworks choose to solve this by simply linking calls to to `Thread.start()` with the approriate `Runnable.run` method, the resulting analysis may not be sound if it does not consider interleavings of program execution. Perhaps this is a responsibility of the analysis to handle, and not the framework. If so, the linking needs to be implementated for VASCO to support multi-threaded programs.
+- Reflection and/or dynamic class loading is not modelled. If your candidate program has this, you probably need to use some tool such as TamiFlex to resolve dynamic bindings and transform your code to use static bindings instead before feeding it to VASCO for static analysis.
 
-- Improve performance using multi-threaded processing of flow functions.
+Again, if anybody is willing to help with any of the above issues, please do come forwards. Code can be submitted via pull requests, and suggestions can be sent via email (contact details are usually on [Rohan Padhye's homepage](http://www.cse.iitb.ac.in/alumni/~rohanpadhye11/)).
