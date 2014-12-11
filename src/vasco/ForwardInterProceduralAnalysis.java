@@ -134,7 +134,7 @@ public abstract class ForwardInterProceduralAnalysis<M,N,A> extends InterProcedu
 						if (targetContext.isAnalysed()) {
 							hit = true;
 							if (verbose) {
-								System.out.println("[HIT] X" + targetContext + " -> X" + targetContext + " " + targetMethod + " ");
+								System.out.println("[HIT] X" + currentContext + " -> X" + targetContext + " " + targetMethod + " ");
 							}
 							A exitValue = targetContext.getExitValue();
 							//System.out.println("EXIT(X"+targetContext+") = " + exitValue);
