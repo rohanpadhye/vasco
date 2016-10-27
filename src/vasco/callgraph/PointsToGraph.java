@@ -298,7 +298,13 @@ public class PointsToGraph {
 			// implement fromClass
 			if (fromClass.implementsInterface(toClass.toString())) {
 				return true;
-			} else if (fromClass.hasSuperclass()) {
+			} else if (fromClass.getInterfaceCount() > 0 || fromClass.hasSuperclass()) {
+				// Check sub interfaces and super class
+				for (SootClass subInterface: fromClass.getInterfaces()) {
+					if (canCast(subInterface, toClass)) {
+						return true;
+					}
+				}
 				return canCast(fromClass.getSuperclass(), toClass);
 			} else {
 				return false;
