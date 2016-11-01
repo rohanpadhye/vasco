@@ -297,17 +297,22 @@ public class PointsToGraph {
 			// For interfaces, the fromClass (or one of its super-classes) must
 			// implement fromClass
 			if (fromClass.implementsInterface(toClass.toString())) {
-				return true;
-			} else if (fromClass.getInterfaceCount() > 0 || fromClass.hasSuperclass()) {
-				// Check sub interfaces and super class
-				for (SootClass subInterface: fromClass.getInterfaces()) {
-					if (canCast(subInterface, toClass)) {
-						return true;
-					}
+			    return true;
+			} 
+
+			if (fromClass.getInterfaceCount() > 0) {
+			    // Check sub interfaces
+			    for (SootClass subInterface: fromClass.getInterfaces()) {
+				if (canCast(subInterface, toClass)) {
+				    return true;
 				}
-				return canCast(fromClass.getSuperclass(), toClass);
+			    }
+			}
+
+			if (fromClass.hasSuperclass()) {
+			    return canCast(fromClass.getSuperclass(), toClass);
 			} else {
-				return false;
+			    return false;
 			}
 		} else {
 			// For classes, the fromClass (or one of its super-classes) and
