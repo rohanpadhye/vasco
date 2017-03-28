@@ -82,17 +82,14 @@ public class CallGraphTransformer extends SceneTransformer {
 			for (final SootMethod targetMethod : targets.keySet()) {
 				final Context<SootMethod, Unit, PointsToGraph> targetContext = targets.get(targetMethod);
 
-				Kind K;
-				if(stmt instanceof InvokeExpr)
-				{
-					K=Edge.ieToKind((InvokeExpr)stmt);
-				}
-				else
-				{
-					K=Kind.INVALID;
+				Kind k;
+				if (stmt instanceof InvokeExpr) {
+					k = Edge.ieToKind((InvokeExpr) stmt);
+				} else {
+					k = Kind.INVALID;
 				}
 				// The context-insensitive edge
-				Edge cgEdge = new Edge(sourceMethod, (Stmt) stmt, targetMethod,K);
+				Edge cgEdge = new Edge(sourceMethod, stmt, targetMethod, k);
 				
 				// Add it to the context-insensitive call-graph
 				callGraph.addEdge(cgEdge);
