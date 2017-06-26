@@ -77,17 +77,20 @@ public class CallGraphTransformer extends SceneTransformer {
 			CallSite<SootMethod, Unit, PointsToGraph> cs = e.getKey();
 			final Context<SootMethod, Unit, PointsToGraph> sourceContext = cs.getCallingContext();
 			final SootMethod sourceMethod = sourceContext.getMethod();
-			final Unit stmt = cs.getCallNode();
+			final Stmt stmt = (Stmt) cs.getCallNode();
 			final Map<SootMethod, Context<SootMethod, Unit, PointsToGraph>> targets = e.getValue();
 			for (final SootMethod targetMethod : targets.keySet()) {
 				final Context<SootMethod, Unit, PointsToGraph> targetContext = targets.get(targetMethod);
 
 				Kind k;
-				if (stmt instanceof InvokeExpr) {
-					k = Edge.ieToKind((InvokeExpr) stmt);
+				if ("<clinit>".equals(targetMethod.getName())) {
+					k = Kind.CLINIT;
+				} else if (stmt.containsInvokeExpr()) {
+					k = Edge.ieToKind(stmt.getInvokeExpr());
 				} else {
 					k = Kind.INVALID;
 				}
+
 				// The context-insensitive edge
 				Edge cgEdge = new Edge(sourceMethod, stmt, targetMethod, k);
 				
@@ -99,8 +102,10 @@ public class CallGraphTransformer extends SceneTransformer {
 
 					@Override
 					public Kind kind() {
-						if (stmt instanceof InvokeExpr) {
-							return Edge.ieToKind((InvokeExpr) stmt);
+						if ("<clinit>".equals(targetMethod.getName())) {
+							return Kind.CLINIT;
+						} else if (stmt.containsInvokeExpr()) {
+							return Edge.ieToKind(stmt.getInvokeExpr());
 						} else {
 							return Kind.INVALID;
 						}
