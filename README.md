@@ -55,3 +55,15 @@ The VASCO framework only implements the value-context-based inter-procedural ana
 ## Contributing ##
 
 If something seems fishy, please open an issue. If you know how to fix it, please submit a pull request.
+
+### List of Contributors ###
+
+VASCO has mainly been developed by **Rohan Padhye** as part of his Master's thesis at [IIT Bombay](https://www.cse.iitb.ac.in), being advised by **Prof. Uday Khedker**.
+
+Over the years, VASCO's API and internals have been refined with the feedback from several contributors, including:
+- Eric Bodden
+- Johannes Späth
+- Vini Kanwar
+- Sushmita Nikose
+- Mandar Shinde
+
