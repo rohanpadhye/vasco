@@ -13,7 +13,7 @@ There is a JavaDoc generated [API documentation](http://rohanpadhye.github.io/va
 
 ## Simple Examples ##
 
-The package [`vasco.soot.examples`](https://github.com/rohanpadhye/vasco/tree/master/src/vasco/soot/examples) contains some example analyses implemented for Soot such as **copy constant propagation** and a simple **sign analysis** (the latter is the same as the example used in the research paper).
+The package [`vasco.soot.examples`](https://github.com/rohanpadhye/vasco/tree/master/src/vasco/soot/examples) contains some example analyses implemented for Soot such as **copy constant propagation** and a simple **sign analysis** (the latter is the same as the example used in the research paper). Try running them on the [provided test cases](https://github.com/rohanpadhye/vasco/tree/master/tests/tests) or any other Java program.
 
 ## Points-to Analysis ##
 
