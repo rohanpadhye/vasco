@@ -7,6 +7,6 @@
 <listEntry value="1"/>
 </listAttribute>
 <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="vasco.soot.examples.SignTest"/>
-<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-cp tests vasco.tests.SignTestCase"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-cp bin vasco.tests.SignTestCase"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="vasco"/>
 </launchConfiguration>

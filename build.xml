@@ -60,13 +60,13 @@
     </target>
     <target name="CopyConstantTest">
         <java classname="vasco.soot.examples.CopyConstantTest" failonerror="true" fork="yes">
-            <arg line="-cp tests vasco.tests.CopyConstantTestCase"/>
+            <arg line="-cp bin vasco.tests.CopyConstantTestCase"/>
             <classpath refid="vasco.classpath"/>
         </java>
     </target>
     <target name="SignTest">
         <java classname="vasco.soot.examples.SignTest" failonerror="true" fork="yes">
-            <arg line="-cp tests vasco.tests.SignTestCase"/>
+            <arg line="-cp bin vasco.tests.SignTestCase"/>
             <classpath refid="vasco.classpath"/>
         </java>
     </target>
