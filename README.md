@@ -9,7 +9,21 @@ You can use these classes directly with any program analysis toolkit or intermed
 
 ## API Documentation ##
 
-There is a JavaDoc generated [API documentation](http://rohanpadhye.github.io/vasco/apidocs) available for the framework classes.
+There is a JavaDoc generated [API documentation](http://rohanpadhye.github.io/vasco/apidocs) available for the framework classes. To develop a custom data-flow analysis, you need to extend either of the [`ForwardInterProceduralAnalysis`](https://rohanpadhye.github.io/vasco/apidocs/vasco/ForwardInterProceduralAnalysis.html) or [`BackwardInterProceduralAnalysis`](https://rohanpadhye.github.io/vasco/apidocs/vasco/BackwardInterProceduralAnalysis.html) classes. 
+
+## Building ##
+
+To use VASCO with Soot, ensure that `soot.jar` is in the `lib/` directory. You should be able to download a [nightly build of Soot](https://soot-build.cs.uni-paderborn.de/nightly/soot/) directly into this location. Here's a sample workflow:
+
+```
+git clone https://github.com/rohanpadhye/vasco
+cd vasco
+curl https://soot-build.cs.uni-paderborn.de/nightly/soot/sootclasses-trunk-jar-with-dependencies.jar -o lib/soot.jar --create-dirs
+```
+
+Currently, VASCO ships with Eclipse project files, so you should be able to import the entire project into Eclipse and build/run it. The `tests` directory contains some Eclipse run configurations (`.launch` files) for running simple examples (see description below).
+
+A standalone build script will be released soon.
 
 ## Simple Examples ##
 
