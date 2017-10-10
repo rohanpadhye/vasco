@@ -1,4 +1,4 @@
-package tests;
+package vasco.tests;
 
 public class SignTestCase {
 	static int P, Q, R;

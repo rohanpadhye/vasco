@@ -1,4 +1,4 @@
-package tests;
+package vasco.tests;
 
 public class CopyConstantTestCase {
 	public static void main(String... args) {

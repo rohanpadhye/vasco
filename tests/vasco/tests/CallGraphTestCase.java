@@ -1,4 +1,4 @@
-package tests;
+package vasco.tests;
 
 public class CallGraphTestCase {
 	

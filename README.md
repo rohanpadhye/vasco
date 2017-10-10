@@ -13,21 +13,31 @@ There is a JavaDoc generated [API documentation](http://rohanpadhye.github.io/va
 
 ## Building ##
 
-To use VASCO with Soot, ensure that `soot.jar` is in the `lib/` directory. You should be able to download a [nightly build of Soot](https://soot-build.cs.uni-paderborn.de/nightly/soot/) directly into this location. Here's a sample workflow:
+### Standalone build using Ant ###
+
+Simply run `ant` in the VASCO directory after cloning the repository.
+
+This compiles the classes into the `bin/` directory, along with a packaged JAR: `bin/vasco.jar`. The ant script itself will download a nightly build of Soot as required by VASCO (into `lib/soot.jar`); please by patient as this download can take some time.
+
+### Developing with Eclipse ### 
+
+Ensure that `soot.jar` is in the `lib/` directory. You should be able to download a [nightly build of Soot](https://soot-build.cs.uni-paderborn.de/nightly/soot/) directly into this location (skip this step if you have successfuly built using Ant already):
 
 ```
-git clone https://github.com/rohanpadhye/vasco
-cd vasco
 curl https://soot-build.cs.uni-paderborn.de/nightly/soot/sootclasses-trunk-jar-with-dependencies.jar -o lib/soot.jar --create-dirs
 ```
 
 Currently, VASCO ships with Eclipse project files, so you should be able to import the entire project into Eclipse and build/run it. The `tests` directory contains some Eclipse run configurations (`.launch` files) for running simple examples (see description below).
 
-A standalone build script will be released soon.
-
 ## Simple Examples ##
 
-The package [`vasco.soot.examples`](https://github.com/rohanpadhye/vasco/tree/master/src/vasco/soot/examples) contains some example analyses implemented for Soot such as **copy constant propagation** and a simple **sign analysis** (the latter is the same as the example used in the research paper). Try running them on the [provided test cases](https://github.com/rohanpadhye/vasco/tree/master/tests/tests) or any other Java program.
+The package [`vasco.soot.examples`](https://github.com/rohanpadhye/vasco/tree/master/src/vasco/soot/examples) contains some example analyses implemented for Soot such as **copy constant propagation** and a simple **sign analysis** (the latter is the same as the example used in the research paper). Try running them on the [provided test cases](https://github.com/rohanpadhye/vasco/tree/master/tests/vasco/tests) or any other Java program.
+
+If you have built VASCO using Ant, you can also use `ant` to run the examples for you, like so:
+
+```
+ant SignTest
+```
 
 ## Points-to Analysis ##
 

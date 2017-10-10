@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project basedir="." default="package" name="vasco">
+    <property environment="env"/>
+    <property name="debuglevel" value="source,lines,vars"/>
+    <property name="target" value="1.8"/>
+    <property name="source" value="1.8"/>
+    <path id="vasco.classpath">
+        <pathelement location="bin"/>
+        <pathelement location="lib/soot.jar"/>
+    </path>
+    <target name="init">
+        <mkdir dir="bin"/>
+        <copy includeemptydirs="false" todir="bin">
+            <fileset dir="src">
+                <exclude name="**/*.launch"/>
+                <exclude name="**/*.java"/>
+            </fileset>
+        </copy>
+        <copy includeemptydirs="false" todir="bin">
+            <fileset dir="tests">
+                <exclude name="**/*.launch"/>
+                <exclude name="**/*.java"/>
+            </fileset>
+        </copy>
+
+        <mkdir dir="lib"/>
+    	<get src="https://soot-build.cs.uni-paderborn.de/nightly/soot/sootclasses-trunk-jar-with-dependencies.jar"
+    		dest="lib/soot.jar" verbose="true" skipexisting="true" />
+    </target>
+    <target name="clean">
+        <delete dir="bin"/>
+        <delete dir="lib"/>
+    </target>
+    <target depends="clean" name="cleanall"/>
+    <target depends="build-subprojects,build-project" name="build"/>
+    <target name="build-subprojects"/>
+    <target depends="init" name="build-project">
+        <echo message="${ant.project.name}: ${ant.file}"/>
+        <javac debug="true" debuglevel="${debuglevel}" destdir="bin" includeantruntime="false" source="${source}" target="${target}">
+            <src path="src"/>
+            <src path="tests"/>
+            <classpath refid="vasco.classpath"/>
+        </javac>
+    </target>
+	<target depends="build" name="package">
+		<jar destfile="bin/vasco.jar">
+		  <fileset dir="bin">
+            <exclude name="**/*.jar"/>
+            <exclude name="vasco/tests/*"/>
+		  </fileset>
+		</jar>
+	</target>
+    <target description="Build all projects which reference this project. Useful to propagate changes." name="build-refprojects"/>
+    <target name="CallGraphTest">
+        <java classname="vasco.callgraph.CallGraphTest" failonerror="true" fork="yes">
+            <jvmarg line="-Xmx4g"/>
+            <arg line="-cp bin -out out -k 3 vasco.tests.CallGraphTestCase"/>
+            <classpath refid="vasco.classpath"/>
+        </java>
+    </target>
+    <target name="CopyConstantTest">
+        <java classname="vasco.soot.examples.CopyConstantTest" failonerror="true" fork="yes">
+            <arg line="-cp tests vasco.tests.CopyConstantTestCase"/>
+            <classpath refid="vasco.classpath"/>
+        </java>
+    </target>
+    <target name="SignTest">
+        <java classname="vasco.soot.examples.SignTest" failonerror="true" fork="yes">
+            <arg line="-cp tests vasco.tests.SignTestCase"/>
+            <classpath refid="vasco.classpath"/>
+        </java>
+    </target>
+</project>
