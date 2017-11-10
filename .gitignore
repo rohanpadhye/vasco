@@ -9,3 +9,7 @@ out
 
 \.settings/
 /bin2/
+
+\.classpath
+
+\.project
