@@ -5,3 +5,6 @@ sootOutput
 *.jar
 *~
 out
+/target/
+
+\.settings/
