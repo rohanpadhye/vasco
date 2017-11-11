@@ -242,6 +242,19 @@ public abstract class ForwardInterProceduralAnalysis<M,N,A> extends InterProcedu
 	}
 
 	/**
+	 * Creates a new value for phantom method
+	 * 
+	 * @param method
+	 * @param entryValue
+	 * @return
+	 */
+	protected Context<M, N, A> initContextForPhantomMethod(M method, A entryValue) {
+		Context<M, N, A> context = new Context<M, N, A>(method);
+		context.setExitValue(copy(entryValue));
+		return context;
+	}
+
+	/**
 	 * Creates a new value context and initialises data flow values for its nodes.
 	 * 
 	 * <p>

@@ -93,12 +93,30 @@ public class Context<M,N,A> implements soot.Context, Comparable<Context<M,N,A>> 
 	private NavigableSet<N> workList;
 
 	/**
+	 * Creates a new context for phantom method
+	 * 
+	 * @param method
+	 */
+	public Context(M method) {
+		count++;
+		this.id = count;
+		this.method = method;
+		this.inValues = new HashMap<N, A>();
+		this.outValues = new HashMap<N, A>();
+		this.analysed = false;
+		this.workList = new TreeSet<N>();
+	}
+
+	/**
 	 * Creates a new context for the given method.
 	 * 
-	 * @param method the method to which this value context belongs
-	 * @param cfg the control-flow graph for the body of <tt>method</tt>
-	 * @param reverse <tt>true</tt> if the analysis is in the reverse direction,
-	 *            and <tt>false</tt> if the analysis is in the forward direction
+	 * @param method
+	 *            the method to which this value context belongs
+	 * @param cfg
+	 *            the control-flow graph for the body of <tt>method</tt>
+	 * @param reverse
+	 *            <tt>true</tt> if the analysis is in the reverse direction, and
+	 *            <tt>false</tt> if the analysis is in the forward direction
 	 */
 	public Context(M method, DirectedGraph<N> cfg, boolean reverse) {
 		// Increment count and set id.
