@@ -1,0 +1,8 @@
+title: Vasco
+description: "An inter-procedural data flow analysis framework using value-based context-sensitivity "
+google_analytics: 
+show_downloads: true
+theme: jekyll-theme-slate
+
+gems:
+  - jekyll-mentions
