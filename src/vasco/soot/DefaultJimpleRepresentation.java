@@ -108,5 +108,10 @@ public class DefaultJimpleRepresentation implements ProgramRepresentation<SootMe
 	 * Returns a reference to the singleton object of this class.
 	 */
 	public static DefaultJimpleRepresentation v() { return singleton; }
+
+	@Override
+	public boolean isPhantomMethod(SootMethod method) {
+		return method.isPhantom();
+	}
 	
 }

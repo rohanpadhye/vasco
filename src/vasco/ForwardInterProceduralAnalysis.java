@@ -106,11 +106,10 @@ public abstract class ForwardInterProceduralAnalysis<M,N,A> extends InterProcedu
 				
 				// Handle flow functions depending on whether this is a call statement or not
 				if (programRepresentation().isCall(node)) {
-					
+
 					out = topValue();
-					
 					boolean hit = false;
-					
+					if (!programRepresentation().resolveTargets(currentContext.getMethod(), node).isEmpty()) {
 					for (M targetMethod : programRepresentation().resolveTargets(currentContext.getMethod(), node)) {
 						A entryValue = callEntryFlowFunction(currentContext, targetMethod, node, in);
 						
@@ -123,8 +122,9 @@ public abstract class ForwardInterProceduralAnalysis<M,N,A> extends InterProcedu
 							targetContext = initContext(targetMethod, entryValue);
 							if (verbose) {
 								System.out.println("[NEW] X" + currentContext + " -> X" + targetContext + " " + targetMethod + " ");
+								System.out.println("ENTRY(X" + targetContext + ") = " + entryValue);
 							}
-							//System.out.println("ENTRY(X"+targetContext+") = " + entryValue);
+
 						}
 
 						// Store the transition from the calling context and site to the called context.
@@ -133,23 +133,25 @@ public abstract class ForwardInterProceduralAnalysis<M,N,A> extends InterProcedu
 						// Check if the target context has been analysed (surely not if it is just newly made):
 						if (targetContext.isAnalysed()) {
 							hit = true;
+								A exitValue = targetContext.getExitValue();
 							if (verbose) {
 								System.out.println("[HIT] X" + currentContext + " -> X" + targetContext + " " + targetMethod + " ");
+									System.out.println("EXIT(X" + targetContext + ") = " + exitValue);
 							}
-							A exitValue = targetContext.getExitValue();
-							//System.out.println("EXIT(X"+targetContext+") = " + exitValue);
-							
 							A returnedValue = callExitFlowFunction(currentContext, targetMethod, node, exitValue);
-							
 							out = meet(out, returnedValue);
-							
 						} 
 					}
-					
+
 					// If there was at least one hit, continue propagation
 					if (hit) {
 						A localValue = callLocalFlowFunction(currentContext, node, in); 
 						out = meet(out, localValue);
+						}
+					}
+					else
+					{
+						out = in;
 					}
 				} else {
 					out = normalFlowFunction(currentContext, node, in);
@@ -250,7 +252,9 @@ public abstract class ForwardInterProceduralAnalysis<M,N,A> extends InterProcedu
 	 */
 	protected Context<M, N, A> initContextForPhantomMethod(M method, A entryValue) {
 		Context<M, N, A> context = new Context<M, N, A>(method);
+		context.setEntryValue(entryValue);
 		context.setExitValue(copy(entryValue));
+		context.markAnalysed();
 		return context;
 	}
 

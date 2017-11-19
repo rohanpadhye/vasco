@@ -70,6 +70,7 @@ public interface ProgramRepresentation<M,N> {
 	 */
 	public boolean isCall(N node);
 	
+	public boolean isPhantomMethod(M method);
 	/**
 	 * Returns a list of target methods for call in the given node.
 	 * 
