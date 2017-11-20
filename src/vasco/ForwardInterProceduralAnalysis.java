@@ -99,7 +99,7 @@ public abstract class ForwardInterProceduralAnalysis<M,N,A> extends InterProcedu
 				A in = currentContext.getValueBefore(node);
 				
 
-				//System.out.println("IN(" + node + ") = " + in);
+				// System.out.println("IN = " + in + "\n" + node);
 				
 				// Now to compute the OUT value
 				A out;
@@ -151,14 +151,15 @@ public abstract class ForwardInterProceduralAnalysis<M,N,A> extends InterProcedu
 					}
 					else
 					{
-						out = in;
+						// handle phantom method
+						out = callLocalFlowFunction(currentContext, node, in);
 					}
 				} else {
 					out = normalFlowFunction(currentContext, node, in);
 				}
 				
-				//System.out.println("OUT(" + node + ") = " + out);
-				//System.out.println("---------------------------------------");
+				// System.out.println("OUT = " + out);
+				// System.out.println("---------------------------------------");
 
 				// Merge with previous OUT to force monotonicity (harmless if flow functions are monotinic)
 				out = meet(out, prevOut);
