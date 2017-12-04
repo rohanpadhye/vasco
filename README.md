@@ -13,13 +13,13 @@ There is a JavaDoc generated [API documentation](http://rohanpadhye.github.io/va
 
 ## Building ##
 
-### Standalone build using Ant ###
+### Option 1: Standalone build using Ant ###
 
 Simply run `ant` in the VASCO directory after cloning the repository.
 
 This compiles the classes into the `bin/` directory, along with a packaged JAR: `bin/vasco.jar`. The ant script itself will download a nightly build of Soot as required by VASCO (into `lib/soot.jar`); please by patient as this download can take some time.
 
-### Developing with Eclipse ### 
+### Option 2: Developing with Eclipse ### 
 
 Ensure that `soot.jar` is in the `lib/` directory. You should be able to download a [nightly build of Soot](https://soot-build.cs.uni-paderborn.de/nightly/soot/) directly into this location (skip this step if you have successfuly built using Ant already):
 
