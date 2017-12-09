@@ -110,5 +110,11 @@ public class ContextSensitiveJimpleRepresentation implements ProgramRepresentati
 	 * Returns a reference to the singleton object of this class.
 	 */
 	public static ContextSensitiveJimpleRepresentation v() { return singleton; }
+
+	@Override
+	public boolean isPhantomMethod(MethodOrMethodContext method) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 	
 }
