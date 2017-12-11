@@ -103,8 +103,9 @@ public abstract class ForwardInterProceduralAnalysis<M,N,A> extends InterProcedu
 				// Get the value of IN 
 				A in = currentContext.getValueBefore(node);
 				
-
-				System.out.println("IN = " + in + "\n" + node);
+				if (verbose) {
+					System.out.println("IN = " + in + "\n" + node);
+				}
 				
 				// Now to compute the OUT value
 				A out;
@@ -165,9 +166,11 @@ public abstract class ForwardInterProceduralAnalysis<M,N,A> extends InterProcedu
 				} else {
 					out = normalFlowFunction(currentContext, node, succ, in);
 				}
-				
-				System.out.println("OUT = " + out);
-				System.out.println("---------------------------------------");
+				if (verbose) {
+					System.out.println("OUT = " + out);
+					System.out.println("---------------------------------------");
+				}
+
 
 				// Merge with previous OUT to force monotonicity (harmless if flow functions are monotinic)
 				out = meet(out, prevOut);
