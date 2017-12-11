@@ -64,6 +64,7 @@ public abstract class ForwardInterProceduralAnalysis<M,N,A> extends InterProcedu
 		}
 
 		// Perform work-list based analysis
+		N succ = null;
 		while (!worklist.isEmpty()) {
 			// Get the newest context on the work-list
 			Context<M,N,A> currentContext = worklist.last();
@@ -77,6 +78,10 @@ public abstract class ForwardInterProceduralAnalysis<M,N,A> extends InterProcedu
 
 			// Remove the next node to process from the context's work-list
 			N node = currentContext.getWorkList().pollFirst();
+			if (!currentContext.getWorkList().isEmpty())
+			{
+				succ = currentContext.getWorkList().first();
+			}
 
 			if (node != null) {
 				// Compute the IN data flow value (only for non-entry units).
@@ -100,7 +105,7 @@ public abstract class ForwardInterProceduralAnalysis<M,N,A> extends InterProcedu
 				A in = currentContext.getValueBefore(node);
 				
 
-				// System.out.println("IN = " + in + "\n" + node);
+				System.out.println("IN = " + in + "\n" + node);
 				
 				// Now to compute the OUT value
 				A out;
@@ -149,6 +154,9 @@ public abstract class ForwardInterProceduralAnalysis<M,N,A> extends InterProcedu
 						A localValue = callLocalFlowFunction(currentContext, node, in); 
 						out = meet(out, localValue);
 						}
+						else {
+							out = callLocalFlowFunction(currentContext, node, in);
+						}
 					}
 					else
 					{
@@ -156,11 +164,11 @@ public abstract class ForwardInterProceduralAnalysis<M,N,A> extends InterProcedu
 						out = callLocalFlowFunction(currentContext, node, in);
 					}
 				} else {
-					out = normalFlowFunction(currentContext, node, in);
+					out = normalFlowFunction(currentContext, node, succ, in);
 				}
 				
-				// System.out.println("OUT = " + out);
-				// System.out.println("---------------------------------------");
+				System.out.println("OUT = " + out);
+				System.out.println("---------------------------------------");
 
 				// Merge with previous OUT to force monotonicity (harmless if flow functions are monotinic)
 				out = meet(out, prevOut);
@@ -317,7 +325,7 @@ public abstract class ForwardInterProceduralAnalysis<M,N,A> extends InterProcedu
 	 * @param inValue   the data flow value before the statement
 	 * @return          the data flow value after the statement 
 	 */
-	public abstract A normalFlowFunction(Context<M,N,A> context, N node, A inValue);
+	public abstract A normalFlowFunction(Context<M, N, A> context, N node, N succ, A inValue);
 	
 	/**
 	 * Processes the inter-procedural flow function for a method call at

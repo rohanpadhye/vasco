@@ -146,7 +146,7 @@ public class SignAnalysis extends ForwardInterProceduralAnalysis<SootMethod, Uni
 	}
 
 	@Override
-	public Map<Local, SignAnalysis.Sign> normalFlowFunction(Context<SootMethod, Unit, Map<Local, SignAnalysis.Sign>> context, Unit unit, Unit succ, Map<Local, SignAnalysis.Sign> inValue) {
+	public Map<Local, SignAnalysis.Sign> normalFlowFunction(Context<SootMethod, Unit, Map<Local, SignAnalysis.Sign>> context, Unit unit, Map<Local, SignAnalysis.Sign> inValue) {
 		// Initialize result to input
 		Map<Local, SignAnalysis.Sign> outValue = copy(inValue);
 		// Only statements assigning locals matter
@@ -281,22 +281,27 @@ public class SignAnalysis extends ForwardInterProceduralAnalysis<SootMethod, Uni
 		/** An unknown sign representing the BOTTOM value of the lattice. */
 		public static final Sign BOTTOM = new Sign() {
 			
+			@Override
 			public Sign meet(Sign other) {
 				return BOTTOM;
 			}
 			
+			@Override
 			public Sign plus(Sign other) {
 				return BOTTOM;
 			}
 			
+			@Override
 			public Sign mult(Sign other) {
 				return BOTTOM;
 			}
 
+			@Override
 			public Sign negate() {
 				return BOTTOM;
 			}
 			
+			@Override
 			public String toString() {
 				return "_|_";
 			}
@@ -305,22 +310,27 @@ public class SignAnalysis extends ForwardInterProceduralAnalysis<SootMethod, Uni
 		/** The sign of an undefined variable, representing the TOP value of the lattice. */
 		public static final Sign TOP = new Sign() {
 		
+			@Override
 			public Sign meet(Sign other) {
 				return other;
 			}
 			
+			@Override
 			public Sign plus(Sign other) {
 				return other;
 			}
 			
+			@Override
 			public Sign mult(Sign other) {
 				return other;
 			}
 			
+			@Override
 			public Sign negate() {
 				return TOP;
 			}
 			
+			@Override
 			public String toString() {
 				return "T";
 			}
@@ -329,6 +339,7 @@ public class SignAnalysis extends ForwardInterProceduralAnalysis<SootMethod, Uni
 		/** The sign of the number 0. */
 		public static final Sign ZERO = new Sign() {
 			
+			@Override
 			public Sign meet(Sign other) {
 				if (other == TOP || other == ZERO) {
 					return ZERO;
@@ -337,6 +348,7 @@ public class SignAnalysis extends ForwardInterProceduralAnalysis<SootMethod, Uni
 				}
 			}
 			
+			@Override
 			public Sign plus(Sign other) {
 				if (other == TOP || other == ZERO) {
 					return ZERO;
@@ -349,6 +361,7 @@ public class SignAnalysis extends ForwardInterProceduralAnalysis<SootMethod, Uni
 				}
 			}
 			
+			@Override
 			public Sign mult(Sign other) {
 				if (other == TOP || other == ZERO || other == POSITIVE || other == NEGATIVE) {
 					return ZERO;
@@ -357,10 +370,12 @@ public class SignAnalysis extends ForwardInterProceduralAnalysis<SootMethod, Uni
 				}
 			}
 			
+			@Override
 			public Sign negate() {
 				return ZERO;
 			}
 			
+			@Override
 			public String toString() {
 				return "0";
 			}
@@ -369,6 +384,7 @@ public class SignAnalysis extends ForwardInterProceduralAnalysis<SootMethod, Uni
 		/** The sign of positive numbers. */
 		public static final Sign POSITIVE = new Sign() {
 			
+			@Override
 			public Sign meet(Sign other) {
 				if (other == TOP || other == POSITIVE) {
 					return POSITIVE;
@@ -377,6 +393,7 @@ public class SignAnalysis extends ForwardInterProceduralAnalysis<SootMethod, Uni
 				}
 			}
 			
+			@Override
 			public Sign plus(Sign other) {
 				if (other == TOP || other == POSITIVE || other == ZERO) {
 					return POSITIVE;
@@ -387,6 +404,7 @@ public class SignAnalysis extends ForwardInterProceduralAnalysis<SootMethod, Uni
 				}
 			}
 			
+			@Override
 			public Sign mult(Sign other) {
 				if (other == TOP || other == POSITIVE) {
 					return POSITIVE;
@@ -399,10 +417,12 @@ public class SignAnalysis extends ForwardInterProceduralAnalysis<SootMethod, Uni
 				}
 			}
 			
+			@Override
 			public Sign negate() {
 				return NEGATIVE;
 			}
 			
+			@Override
 			public String toString() {
 				return "+";
 			}
@@ -410,6 +430,7 @@ public class SignAnalysis extends ForwardInterProceduralAnalysis<SootMethod, Uni
 		
 		/** The sign of negative numbers. */
 		public static final Sign NEGATIVE = new Sign() {
+			@Override
 			public Sign meet(Sign other) {
 				if (other == TOP || other == NEGATIVE) {
 					return NEGATIVE;
@@ -417,6 +438,7 @@ public class SignAnalysis extends ForwardInterProceduralAnalysis<SootMethod, Uni
 					return BOTTOM;
 				}
 			}
+			@Override
 			public Sign plus(Sign other) {
 				if (other == TOP || other == NEGATIVE || other == ZERO) {
 					return NEGATIVE;
@@ -426,6 +448,7 @@ public class SignAnalysis extends ForwardInterProceduralAnalysis<SootMethod, Uni
 					return BOTTOM;
 				}
 			}
+			@Override
 			public Sign mult(Sign other) {
 				if (other == TOP || other == NEGATIVE) {
 					return POSITIVE;
@@ -437,9 +460,11 @@ public class SignAnalysis extends ForwardInterProceduralAnalysis<SootMethod, Uni
 					return BOTTOM;
 				}
 			}
+			@Override
 			public Sign negate() {
 				return POSITIVE;
 			}
+			@Override
 			public String toString() {
 				return "-";
 			}
