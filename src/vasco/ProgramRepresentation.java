@@ -19,7 +19,6 @@ package vasco;
 
 import java.util.List;
 
-import soot.SootMethod;
 import soot.toolkits.graph.DirectedGraph;
 
 /**
@@ -99,5 +98,4 @@ public interface ProgramRepresentation<M,N> {
 	 */
 	public List<M> resolveTargets(M callerMethod, N callNode);
 
-	boolean isPhantomMethod(M method);
 }
