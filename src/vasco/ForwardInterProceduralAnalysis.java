@@ -70,6 +70,7 @@ public abstract class ForwardInterProceduralAnalysis<M,N,A> extends InterProcedu
 			
 			// If this context has no more nodes to analyze, then take it out of the work-list
 			if (currentContext.getWorkList().isEmpty()) {
+				currentContext.markAnalysed();
 				worklist.remove(currentContext);
 				continue;
 			}
@@ -77,11 +78,12 @@ public abstract class ForwardInterProceduralAnalysis<M,N,A> extends InterProcedu
 
 			// Remove the next node to process from the context's work-list
 			N node = currentContext.getWorkList().pollFirst();
-			if (!currentContext.getWorkList().isEmpty())
-			{
+			System.out.println(node);
+			if (currentContext.getWorkList().isEmpty()) {
+				succ = null;
+			} else {
 				succ = currentContext.getWorkList().first();
 			}
-
 			if (node != null) {
 				// Compute the IN data flow value (only for non-entry units).
 				List<N> predecessors = currentContext.getControlFlowGraph().getPredsOf(node);
