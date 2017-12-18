@@ -63,7 +63,6 @@ public abstract class ForwardInterProceduralAnalysis<M,N,A> extends InterProcedu
 		}
 
 		// Perform work-list based analysis
-		N succ = null;
 		while (!worklist.isEmpty()) {
 			// Get the newest context on the work-list
 			Context<M,N,A> currentContext = worklist.last();
@@ -78,12 +77,7 @@ public abstract class ForwardInterProceduralAnalysis<M,N,A> extends InterProcedu
 
 			// Remove the next node to process from the context's work-list
 			N node = currentContext.getWorkList().pollFirst();
-			System.out.println(node);
-			if (currentContext.getWorkList().isEmpty()) {
-				succ = null;
-			} else {
-				succ = currentContext.getWorkList().first();
-			}
+
 			if (node != null) {
 				// Compute the IN data flow value (only for non-entry units).
 				List<N> predecessors = currentContext.getControlFlowGraph().getPredsOf(node);
@@ -166,7 +160,7 @@ public abstract class ForwardInterProceduralAnalysis<M,N,A> extends InterProcedu
 						out = callLocalFlowFunction(currentContext, node, in);
 					}
 				} else {
-					out = normalFlowFunction(currentContext, node, succ, in);
+					out = normalFlowFunction(currentContext, node, in);
 				}
 				if (verbose) {
 					System.out.println("OUT = " + out);
@@ -329,7 +323,7 @@ public abstract class ForwardInterProceduralAnalysis<M,N,A> extends InterProcedu
 	 * @param inValue   the data flow value before the statement
 	 * @return          the data flow value after the statement 
 	 */
-	public abstract A normalFlowFunction(Context<M, N, A> context, N node, N succ, A inValue);
+	public abstract A normalFlowFunction(Context<M, N, A> context, N node, A inValue);
 	
 	/**
 	 * Processes the inter-procedural flow function for a method call at

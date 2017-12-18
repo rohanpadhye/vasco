@@ -84,7 +84,7 @@ public class CopyConstantAnalysis extends ForwardInterProceduralAnalysis<SootMet
 
 	@Override
 	public Map<Local, Constant> normalFlowFunction(Context<SootMethod, Unit, Map<Local, Constant>> context, Unit unit,
-			Unit succ, Map<Local, Constant> inValue) {
+			Map<Local, Constant> inValue) {
 		// Initialize result to input
 		Map<Local, Constant> outValue = copy(inValue);
 		// Only statements assigning locals matter

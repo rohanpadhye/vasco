@@ -147,7 +147,7 @@ public class SignAnalysis extends ForwardInterProceduralAnalysis<SootMethod, Uni
 
 	@Override
 	public Map<Local, SignAnalysis.Sign> normalFlowFunction(
-			Context<SootMethod, Unit, Map<Local, SignAnalysis.Sign>> context, Unit unit, Unit succ,
+			Context<SootMethod, Unit, Map<Local, SignAnalysis.Sign>> context, Unit unit,
 			Map<Local, SignAnalysis.Sign> inValue) {
 		// Initialize result to input
 		Map<Local, SignAnalysis.Sign> outValue = copy(inValue);
