@@ -24,8 +24,12 @@ import java.util.Map;
 import java.util.NavigableSet;
 import java.util.TreeSet;
 
+import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.Table;
+
 import soot.toolkits.graph.DirectedGraph;
 import soot.toolkits.graph.SlowPseudoTopologicalOrderer;
+import soot.toolkits.scalar.Pair;
 
 /**
  * A value-based context for a context-sensitive inter-procedural data flow
@@ -89,9 +93,12 @@ public class Context<M,N,A> implements soot.Context, Comparable<Context<M,N,A>> 
 	/** The data flow values at the entry of each node. */
 	private Map<N,A> inValues;
 
+	private Table<N, N, A> vals = HashBasedTable.create();
+
 	/** The work-list of nodes that still need to be analysed. */
 	private NavigableSet<N> workList;
 
+	private NavigableSet<Pair<N, N>> workListOfEdges;
 	/**
 	 * Creates a new context for phantom method
 	 * 
@@ -105,6 +112,7 @@ public class Context<M,N,A> implements soot.Context, Comparable<Context<M,N,A>> 
 		this.outValues = new HashMap<N, A>();
 		this.analysed = false;
 		this.workList = new TreeSet<N>();
+		this.workListOfEdges = new TreeSet<Pair<N, N>>();
 	}
 
 	/**
@@ -154,6 +162,14 @@ public class Context<M,N,A> implements soot.Context, Comparable<Context<M,N,A>> 
 				return numbers.get(u) - numbers.get(v);
 			}
 		});
+		this.workListOfEdges = new TreeSet<Pair<N, N>>(new Comparator<Pair<N,N>>() {
+			@Override
+			public int compare(Pair<N, N> o1, Pair<N, N> o2) {
+				int first = numbers.get(o1.getO1()) + numbers.get(o1.getO2());
+				int second = numbers.get(o2.getO1()) + numbers.get(o2.getO2());
+				return first - second;
+			}
+		});
 	}
 
 	/**
@@ -172,7 +188,7 @@ public class Context<M,N,A> implements soot.Context, Comparable<Context<M,N,A>> 
 	 * Destroys all data flow information associated with the nodes
 	 * of this context.
 	 */
-	void freeMemory() {
+	public void freeMemory() {
 		liveNodes = liveNodes - controlFlowGraph.size();
 		inValues = null;
 		outValues = null;
@@ -231,6 +247,16 @@ public class Context<M,N,A> implements soot.Context, Comparable<Context<M,N,A>> 
 		return method;
 	}
 	
+	public A getEdgeValue(N node, N succ) {
+		return this.vals.get(node, succ);
+	}
+
+	public void setEdgeValue(N node, N succ, A val) {
+		if (this.vals == null) {
+			this.vals=HashBasedTable.create();
+		}
+		this.vals.put(node, succ, val);
+	}
 	/**
 	 * Gets the data flow value at the exit of the given node.
 	 * 
@@ -260,6 +286,10 @@ public class Context<M,N,A> implements soot.Context, Comparable<Context<M,N,A>> 
 		return workList;
 	}
 
+	public NavigableSet<Pair<N, N>> getWorkListOfEdges() {
+		return this.workListOfEdges;
+	}
+
 	/** 
 	 * Returns whether or not this context has been analysed at least once. 
 	 *
@@ -283,7 +313,7 @@ public class Context<M,N,A> implements soot.Context, Comparable<Context<M,N,A>> 
 	/** 
 	 * Marks this context as analysed.
 	 */
-	void markAnalysed() {
+	public void markAnalysed() {
 		this.analysed = true;
 	}
 

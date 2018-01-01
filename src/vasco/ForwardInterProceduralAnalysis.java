@@ -100,7 +100,8 @@ public abstract class ForwardInterProceduralAnalysis<M,N,A> extends InterProcedu
 				A in = currentContext.getValueBefore(node);
 				
 				if (verbose) {
-					System.out.println("IN = " + in + "\n" + node);
+					System.out.println("IN = " + in);
+					System.err.println(node);
 				}
 				
 				// Now to compute the OUT value
