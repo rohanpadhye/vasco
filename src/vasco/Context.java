@@ -19,6 +19,7 @@ package vasco;
 
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.NavigableSet;
@@ -98,7 +99,7 @@ public class Context<M,N,A> implements soot.Context, Comparable<Context<M,N,A>> 
 	/** The work-list of nodes that still need to be analysed. */
 	private NavigableSet<N> workList;
 
-	private NavigableSet<Pair<N, N>> workListOfEdges;
+	private LinkedList<Pair<N, N>> workListOfEdges;
 	/**
 	 * Creates a new context for phantom method
 	 * 
@@ -112,7 +113,7 @@ public class Context<M,N,A> implements soot.Context, Comparable<Context<M,N,A>> 
 		this.outValues = new HashMap<N, A>();
 		this.analysed = false;
 		this.workList = new TreeSet<N>();
-		this.workListOfEdges = new TreeSet<Pair<N, N>>();
+		this.workListOfEdges = new LinkedList<Pair<N, N>>();
 	}
 
 	/**
@@ -162,14 +163,7 @@ public class Context<M,N,A> implements soot.Context, Comparable<Context<M,N,A>> 
 				return numbers.get(u) - numbers.get(v);
 			}
 		});
-		this.workListOfEdges = new TreeSet<Pair<N, N>>(new Comparator<Pair<N,N>>() {
-			@Override
-			public int compare(Pair<N, N> o1, Pair<N, N> o2) {
-				int first = numbers.get(o1.getO1()) + numbers.get(o1.getO2());
-				int second = numbers.get(o2.getO1()) + numbers.get(o2.getO2());
-				return first - second;
-			}
-		});
+		this.workListOfEdges = new LinkedList<Pair<N, N>>();
 	}
 
 	/**
@@ -286,7 +280,7 @@ public class Context<M,N,A> implements soot.Context, Comparable<Context<M,N,A>> 
 		return workList;
 	}
 
-	public NavigableSet<Pair<N, N>> getWorkListOfEdges() {
+	public LinkedList<Pair<N, N>> getWorkListOfEdges() {
 		return this.workListOfEdges;
 	}
 
@@ -357,5 +351,9 @@ public class Context<M,N,A> implements soot.Context, Comparable<Context<M,N,A>> 
 	@Override
 	public String toString() {
 		return Integer.toString(id);
+	}
+
+	public void unmarkAnalysed() {
+		this.analysed = false;
 	}
 }
