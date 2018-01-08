@@ -11,43 +11,50 @@ You can use these classes directly with any program analysis toolkit or intermed
 
 There is a JavaDoc generated [API documentation](http://rohanpadhye.github.io/vasco/apidocs) available for the framework classes. To develop a custom data-flow analysis, you need to extend either of the [`ForwardInterProceduralAnalysis`](https://rohanpadhye.github.io/vasco/apidocs/vasco/ForwardInterProceduralAnalysis.html) or [`BackwardInterProceduralAnalysis`](https://rohanpadhye.github.io/vasco/apidocs/vasco/BackwardInterProceduralAnalysis.html) classes. 
 
-## Building ##
+## Building with Maven ##
 
-### Standalone build using Ant ###
+### Standalone build ###
 
-Simply run `ant` in the VASCO directory after cloning the repository.
+Run `mvn package` in the VASCO directory after cloning the repository.
 
-This compiles the classes into the `bin/` directory, along with a packaged JAR: `bin/vasco.jar`. The ant script itself will download a nightly build of Soot as required by VASCO (into `lib/soot.jar`); please by patient as this download can take some time.
+This compiles the classes into the `target/classes` directory, along with a packaged JAR: `target/vasco-$VERSION.jar`. 
 
-### Developing with Eclipse ### 
+We are currently working on hosting the VASCO artifact to a repository for easy inclusion in other projects as a Maven dependency.
 
-Import as maven project
+
+### Developing with Eclipse or IntelliJ IDEA ### 
+
+Simply import as a Maven project. Everything should work out of the box. If not, please open an issue.
 
 ## Simple Examples ##
 
-The package [`vasco.soot.examples`](https://github.com/rohanpadhye/vasco/tree/master/src/vasco/soot/examples) contains some example analyses implemented for Soot such as **copy constant propagation** and a simple **sign analysis** (the latter is the same as the example used in the research paper). Try running them on the [provided test cases](https://github.com/rohanpadhye/vasco/tree/master/tests/vasco/tests) or any other Java program.
+The package [`vasco.soot.examples`](https://github.com/rohanpadhye/vasco/tree/master/src/main/java/vasco/soot/examples) contains some example analyses implemented for Soot such as **copy constant propagation** and a simple **sign analysis** (the latter is the same as the example used in the research paper). For each of these analysis, there is also a corresponding [driver class](https://github.com/rohanpadhye/vasco/tree/master/src/test/java/vasco/soot/examples) to run the analysis on some application with a main class. Try running the analyses on the [provided test cases](https://github.com/rohanpadhye/vasco/tree/master/src/test/java/vasco/tests) or any other Java program.
 
-If you have built VASCO using Ant, you can also use `ant` to run the examples for you, like so:
+You can run the examples on the command-line using the Maven exec plugin:
 
 ```
-ant SignTest
+mvn exec:java -Dexec.mainClass="vasco.soot.examples.SignTest" -Dexec.args="-cp target/test-classes/ vasco.tests.SignTestCase"
+```
+
+```
+mvn exec:java -Dexec.mainClass="vasco.soot.examples.CopyConstantTest" -Dexec.args="-cp target/test-classes/ vasco.tests.CopyConstantTestCase"
 ```
 
 ## Points-to Analysis ##
 
-The package [`vasco.callgraph`](https://github.com/rohanpadhye/vasco/tree/master/src/vasco/callgraph) contains a sophisticated points-to analysis that builds context-sensitive call graphs on-the-fly, as detailed in the paper.
+The package [`vasco.callgraph`](https://github.com/rohanpadhye/vasco/tree/master/src/main/java/vasco/callgraph) contains a sophisticated points-to analysis that builds context-sensitive call graphs on-the-fly, as detailed in the paper.
 
 ### Experiments ###
 
 To run the experiments described in the paper, ensure that Soot is in your class path and execute:
 
-<code>
-java vasco.callgraph.CallGraphTest [-cp CLASSPATH] [-out DIR] [-k DEPTH] MAIN_CLASS
-</code>
+```
+mvn exec:java -Dexec.mainClass="vasco.callgraph.CallGraphTest" -Dexec.args="[-cp CLASSPATH] [-out DIR] [-k DEPTH] MAIN_CLASS"
+```
 
 Where:
 
-- `CLASSPATH` is used to locate application classes of the program to analyze (default: `.`)
+- `CLASSPATH` is used to locate application classes of the program to analyze (default: VASCO's own classpath)
 - `DIR` is the output directory where results will be dumped (default: `.`)
 - `DEPTH` is the maximum depth of call chains to count (default: `10`)
 - `MAIN_CLASS` is the entry point to the program
@@ -56,7 +63,7 @@ This will generate a bunch of CSV files in the output directory containing stati
 
 ### Using Generated Call Graphs ###
 
-To use the generated call graphs programatically in your own Soot-based analysis, make sure to add the `vasco.callgraph.CallGraphTransformer` to Soot's analysis `PackManager` (see code in [`CallGraphTest.main()`](https://github.com/rohanpadhye/vasco/blob/master/src/vasco/callgraph/CallGraphTest.java) for how to do this) which set's the call-graphs in the global `Scene` appropriately.
+To use the generated call graphs programatically in your own Soot-based analysis, make sure to add the `vasco.callgraph.CallGraphTransformer` to Soot's analysis `PackManager` (see code in [`CallGraphTest.main()`](https://github.com/rohanpadhye/vasco/blob/master/src/test/java/vasco/callgraph/CallGraphTest.java) for how to do this) which set's the call-graphs in the global `Scene` appropriately.
 
 Any Soot-based analysis that you add to the pipe-line after the `CallGraphTransformer` can make use of the generated call-graphs by calling `Scene.v().getCallGraph()` or `Scene.v().getContextSensitiveCallGraph()` as you would with the results of SPARK and PADDLE respectively.
 
@@ -84,4 +91,5 @@ Over the years, VASCO's API and internals have been refined with the feedback fr
 - Vini Kanwar
 - Sushmita Nikose
 - Mandar Shinde
+- Linghui Luo
 

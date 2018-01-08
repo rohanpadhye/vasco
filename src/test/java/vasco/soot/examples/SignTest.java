@@ -19,6 +19,7 @@ package vasco.soot.examples;
 
 import java.util.Map;
 
+import org.junit.Test;
 import soot.Local;
 import soot.PackManager;
 import soot.SceneTransformer;
@@ -76,7 +77,7 @@ public class SignTest extends SceneTransformer {
 	}
 
 	public static void main(String args[]) {
-		String classPath = ".";		
+		String classPath = System.getProperty("java.class.path");
 		String mainClass = null;
 		
 		/* ------------------- OPTIONS ---------------------- */
@@ -95,7 +96,7 @@ public class SignTest extends SceneTransformer {
 			if (i != args.length || mainClass == null)
 				throw new Exception();
 		} catch (Exception e) {
-			System.err.println("Usage: java vasco.soot.examples.SignTest [-cp CLASSPATH] MAIN_CLASS");
+			System.err.println("Usage: java SignTest [-cp CLASSPATH] MAIN_CLASS");
 			System.exit(1);
 		}
 		
@@ -113,9 +114,15 @@ public class SignTest extends SceneTransformer {
 				"-main-class", mainClass,
 				"-f", "none", mainClass 
 		};
-		SignTest cgt = new SignTest();
-		PackManager.v().getPack("wjtp").add(new Transform("wjtp.ccp", cgt));
+		SignTest sgn = new SignTest();
+		PackManager.v().getPack("wjtp").add(new Transform("wjtp.sgn", sgn));
 		soot.Main.main(sootArgs);
+	}
+
+	@Test
+	public void testSignAnalysis() {
+		// TODO: Compare output with an ideal (expected) output
+		SignTest.main(new String[]{"vasco.tests.SignTestCase"});
 	}
 	
 }

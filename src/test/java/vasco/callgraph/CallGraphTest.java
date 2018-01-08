@@ -18,8 +18,10 @@
 package vasco.callgraph;
 
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -29,6 +31,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 
+import org.junit.Test;
 import soot.PackManager;
 import soot.Scene;
 import soot.SootMethod;
@@ -53,7 +56,7 @@ public class CallGraphTest {
 
 	public static void main(String args[]) {
 		outputDirectory = ".";
-		String classPath = ".";		
+		String classPath = System.getProperty("java.class.path");
 		String mainClass = null;
 		int callChainDepth = 10;
 
@@ -66,6 +69,10 @@ public class CallGraphTest {
 					i += 2;
 				} else if (args[i].equals("-out")) {
 					outputDirectory = args[i+1];
+					File outDirFile = new File(outputDirectory);
+					if (outDirFile.exists() == false && outDirFile.mkdirs() == false) {
+						throw new IOException("Could not make output directory: " + outputDirectory);
+					}
 					i += 2;
 				} else if (args[i].equals("-k")) { 
 					callChainDepth = Integer.parseInt(args[i+1]);
@@ -299,6 +306,12 @@ public class CallGraphTest {
 		
 		return count;
 		
+	}
+
+	@Test
+	public void testCallGraphAnalaysis() {
+		// TODO: Compare output with an ideal (expected) output
+		CallGraphTest.main(new String[]{"-k", "-3", "-out", "target/test-results/CallGraphTestResults", "vasco.tests.CallGraphTestCase"});
 	}
 	
 }
