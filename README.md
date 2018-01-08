@@ -21,7 +21,6 @@ This compiles the classes into the `target/classes` directory, along with a pack
 
 We are currently working on hosting the VASCO artifact to a repository for easy inclusion in other projects as a Maven dependency.
 
-
 ### Developing with Eclipse or IntelliJ IDEA ### 
 
 Simply import as a Maven project. Everything should work out of the box. If not, please open an issue.
