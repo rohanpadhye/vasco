@@ -6,10 +6,9 @@ sootOutput
 *~
 out
 /target/
-
-\.settings/
 /bin2/
-
+\.settings/
 \.classpath
-
 \.project
+.idea
+*.iml
