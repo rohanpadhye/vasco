@@ -5,3 +5,11 @@ sootOutput
 *.jar
 *~
 out
+/target/
+
+\.settings/
+/bin2/
+
+\.classpath
+
+\.project

@@ -21,13 +21,7 @@ This compiles the classes into the `bin/` directory, along with a packaged JAR: 
 
 ### Option 2: Developing with Eclipse ### 
 
-Ensure that `soot.jar` is in the `lib/` directory. You should be able to download a [nightly build of Soot](https://soot-build.cs.uni-paderborn.de/nightly/soot/) directly into this location (skip this step if you have successfuly built using Ant already):
-
-```
-curl https://soot-build.cs.uni-paderborn.de/nightly/soot/sootclasses-trunk-jar-with-dependencies.jar -o lib/soot.jar --create-dirs
-```
-
-Currently, VASCO ships with Eclipse project files, so you should be able to import the entire project into Eclipse and build/run it. The `tests` directory contains some Eclipse run configurations (`.launch` files) for running simple examples (see description below).
+Import as maven project
 
 ## Simple Examples ##
 
