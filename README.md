@@ -13,7 +13,21 @@ There is a JavaDoc generated [API documentation](http://rohanpadhye.github.io/va
 
 ## Building with Maven ##
 
-### Standalone build ###
+**Note**: Soot may not work with Java 9+, due to the absence of rt.jar in the new JDK. Until Soot's Java 9 support is released into the main stream, VASCO is also restricted to Java 8. If your default Java version is newer than Java 8, then set the `JAVA_HOME` environment variable to a Java 8 installation before continuing.
+
+### Install locally ###
+
+Run `mvn install` in the VASCO directory after cloning the repository. You should now be able to add the following Maven dependency in any other Maven project on the same machine:
+
+```
+<dependency>
+  <groupId>in.ac.iitb.cse</groupId>
+  <artifactId>vasco</artifactId>
+  <version>1.1-SNAPSHOT</version>
+</dependency>
+```
+
+### Standalone JAR ###
 
 Run `mvn package` in the VASCO directory after cloning the repository.
 
