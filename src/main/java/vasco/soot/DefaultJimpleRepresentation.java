@@ -111,8 +111,7 @@ public class DefaultJimpleRepresentation implements ProgramRepresentation<SootMe
 
 	@Override
 	public boolean isPhantomMethod(SootMethod method) {
-		// TODO Auto-generated method stub
-		return false;
+		return method.isPhantom() || !method.hasActiveBody();
 	}
 	
 }

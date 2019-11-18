@@ -59,7 +59,11 @@ public abstract class ForwardInterProceduralAnalysis<M,N,A> extends InterProcedu
 
 		// Initial contexts
 		for (M method : programRepresentation().getEntryPoints()) {
-			initContext(method, boundaryValue(method));
+			if (programRepresentation().isPhantomMethod(method)) {
+				initContextForPhantomMethod(method, boundaryValue(method));
+			} else {
+				initContext(method, boundaryValue(method));
+			}
 		}
 
 		// Perform work-list based analysis
